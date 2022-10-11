@@ -9,6 +9,8 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
+PALE_COLOR = (255, 223, 145)
+DARK_BROWN = (51, 39, 10)
 
 # Creating the board
 NUM_ROWS = 8
@@ -36,10 +38,21 @@ def is_valid_position(game_board, row, col):
 
 
 def draw_board():
+    num = 0
+
     for row in range(NUM_ROWS):
+        num = num + 1
         for col in range(NUM_COLS):
-            pygame.draw.rect(surface, GREEN,
-            pygame.Rect(row*SURFACE_WIDTH/8, col*SURFACE_HEIGHT/8, SURFACE_WIDTH/8, SURFACE_HEIGHT/8))
+            num = num + 1
+            if num % 2 == 1:
+                pygame.draw.rect(surface, DARK_BROWN,
+                pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
+                SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
+            else:
+                pygame.draw.rect(surface, PALE_COLOR,
+                pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
+                SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
+
 
 # Initializing Pygame
 pygame.init()
