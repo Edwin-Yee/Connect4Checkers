@@ -53,12 +53,16 @@ def draw_board():
                 pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
                 SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
 
+            if col == 0 or col == 1:
+                pygame.draw.circle(surface, RED, (row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8),
+                                   (SURFACE_WIDTH/8)/2)
+
+
+
 
 # Initializing Pygame
 pygame.init()
 
-# Initializing surface
-surface = pygame.display.set_mode((400, 300))
 
 # Initialing Color
 color = (255, 0, 0)
