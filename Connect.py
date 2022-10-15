@@ -21,6 +21,7 @@ SURFACE_WIDTH = 400
 SURFACE_HEIGHT = 400
 surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
 
+CIRCLE_RAD = (SURFACE_WIDTH/8)/2
 game_over = False
 
 def initialize_board():
@@ -40,6 +41,7 @@ def is_valid_position(game_board, row, col):
 def draw_board():
     num = 0
 
+    # Black Pieces
     for row in range(NUM_ROWS):
         num = num + 1
         for col in range(NUM_COLS):
@@ -53,9 +55,18 @@ def draw_board():
                 pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
                 SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
 
+            # Red Pieces
             if col == 0 or col == 1:
-                pygame.draw.circle(surface, RED, (row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8),
-                                   (SURFACE_WIDTH/8)/2)
+                pygame.draw.circle(surface, RED, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
+                                                  col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+
+            # Black Pieces
+            if col == NUM_COLS-1 or col == NUM_COLS-2:
+                pygame.draw.circle(surface, BLACK, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
+                                                    col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+
+
+
 
 
 
