@@ -27,6 +27,9 @@ SURFACE_HEIGHT = 400
 CIRCLE_RAD = (SURFACE_WIDTH/8)/2
 game_over = False
 
+# Initializing Pygame
+pygame.init()
+surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, sprite_color, width, height):
@@ -34,13 +37,17 @@ class Sprite(pygame.sprite.Sprite):
 
         self.image = pygame.Surface([width, height])
         self.image.fill(sprite_color)
+
+        self.color = sprite_color
+
         self.rect = self.image.get_rect()
 
     def mouse_click_check(self, mouse_x, mouse_y):
         if self.rect.collidepoint(mouse_x, mouse_y):
-            print("Collision detected!")
-
-
+            if self.color == RED:
+                provide_legal_moves(self.rect.x, self.rect.y, RED)
+            elif self.color == BLACK:
+                provide_legal_moves(self.rect.x, self.rect.y, BLACK)
 
 def initialize_board():
     game_board = np.zeros((NUM_ROWS, NUM_COLS))
@@ -94,25 +101,19 @@ def draw_board():
                 # pygame.draw.circle(surface, BLACK, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
                 #                                     col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
 
-    for coord in red_pieces_coords:
-        print("red piece coords: ", coord)
-
-    for coord in black_pieces_coords:
-        print("black piece coords: ", coord)
-
     # Create the sprites
     red_game_pieces = {}
     for count, coord in enumerate(red_pieces_coords):
         red_game_pieces["red_piece%d" % count] = Sprite(RED, CIRCLE_RAD, CIRCLE_RAD)
-        red_game_pieces["red_piece%d" % count].rect.x = coord[0]
-        red_game_pieces["red_piece%d" % count].rect.y = coord[1]
+        red_game_pieces["red_piece%d" % count].rect.x = coord[0] - CIRCLE_RAD/2
+        red_game_pieces["red_piece%d" % count].rect.y = coord[1] - CIRCLE_RAD/2
 
 
     black_game_pieces = {}
     for count, coord in enumerate(black_pieces_coords):
         red_game_pieces["black_piece%d" % count] = Sprite(BLACK, CIRCLE_RAD, CIRCLE_RAD)
-        red_game_pieces["black_piece%d" % count].rect.x = coord[0]
-        red_game_pieces["black_piece%d" % count].rect.y = coord[1]
+        red_game_pieces["black_piece%d" % count].rect.x = coord[0] - CIRCLE_RAD/2
+        red_game_pieces["black_piece%d" % count].rect.y = coord[1] - CIRCLE_RAD/2
 
     for i in red_game_pieces:
         all_sprites_list.add(red_game_pieces[i])
@@ -121,25 +122,33 @@ def draw_board():
         all_sprites_list.add(black_game_pieces[j])
 
 
-# Initializing Pygame
-pygame.init()
-surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
+# Legal moves are "jumping" over another piece in front of your piece. Pieces with no other pieces in
+# front will have no legal moves.
+def provide_legal_moves(x, y, color):
+    print(x, y, color)
+    if color == BLACK:
+        if y - 2 * CIRCLE_RAD > 0 and surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == BLACK:
+            print("Legal move: ", (x, y - 2 * CIRCLE_RAD))
+        if y - 2 * CIRCLE_RAD > 0 and x - 2 * CIRCLE_RAD > 0 and \
+                surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
+            print("Legal move: ", (x - 2 * CIRCLE_RAD, y - 2 * CIRCLE_RAD))
+        if y - 2 * CIRCLE_RAD > 0 and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
+                surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
+            print("Legal move: ", (x + 2 * CIRCLE_RAD, y - 2 * CIRCLE_RAD))
+
+    elif color == RED:
+        if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED:
+            print("Legal move: ", (x, y + 2 * CIRCLE_RAD))
+        if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x - 2 * CIRCLE_RAD > 0 and \
+                surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
+            print("Legal move: ", (x - 2 * CIRCLE_RAD, y + 2 * CIRCLE_RAD))
+        if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
+                surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
+            print("Legal move: ", (x + 2 * CIRCLE_RAD, y + 2 * CIRCLE_RAD))
+
+
 
 all_sprites_list = pygame.sprite.Group()
-
-# Creating sprites with color and dimensions
-# sprite1 = Sprite(RED, 100, 100)
-# sprite2 = Sprite(GREEN, 100, 200)
-# sprite3 = Sprite(BLUE, 200, 100)
-#
-# sprite1.rect.x = 0
-# sprite1.rect.y = 0
-# sprite2.rect.x = 100
-# sprite2.rect.y = 100
-# sprite3.rect.x = 200
-# sprite3.rect.y = 200
-#
-# all_sprites_list.add(sprite1, sprite2, sprite3)
 
 # Initializing the board
 draw_board()
@@ -161,16 +170,3 @@ while not game_over:
     all_sprites_list.draw(surface)
 
     pygame.display.flip()
-
-
-
-
-
-
-
-
-
-
-
-
-
