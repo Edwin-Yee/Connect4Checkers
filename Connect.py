@@ -36,6 +36,11 @@ class Sprite(pygame.sprite.Sprite):
         self.image.fill(sprite_color)
         self.rect = self.image.get_rect()
 
+    def mouse_click_check(self, mouse_x, mouse_y):
+        if self.rect.collidepoint(mouse_x, mouse_y):
+            print("Collision detected!")
+
+
 
 def initialize_board():
     game_board = np.zeros((NUM_ROWS, NUM_COLS))
@@ -54,7 +59,9 @@ def is_valid_position(game_board, row, col):
 def draw_board():
     num = 0
 
-    # Black Pieces
+    red_pieces_coords = []
+    black_pieces_coords = []
+
     for row in range(NUM_ROWS):
         num = num + 1
         for col in range(NUM_COLS):
@@ -70,15 +77,48 @@ def draw_board():
                 pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
                 SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
 
-            # Red Pieces
             if col == 0 or col == 1:
-                pygame.draw.circle(surface, RED, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
-                                                  col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+                # Generate coordinates for the sprite pieces
+                # Red pieces coordinates
+                red_pieces_coords.append((row * SURFACE_WIDTH / 8 + CIRCLE_RAD, col * SURFACE_HEIGHT / 8 + CIRCLE_RAD))
 
-            # Black Pieces
+                # pygame.draw.circle(surface, RED, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
+                #                                    col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+
+            # # Creating the Black Pieces as sprites
             if col == NUM_COLS-1 or col == NUM_COLS-2:
-                pygame.draw.circle(surface, BLACK, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
-                                                    col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+                # Generate coordinates for the sprite pieces
+                # Black pieces coordinates
+                black_pieces_coords.append((row * SURFACE_WIDTH / 8 + CIRCLE_RAD, col * SURFACE_HEIGHT / 8 + CIRCLE_RAD))
+
+                # pygame.draw.circle(surface, BLACK, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
+                #                                     col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+
+    for coord in red_pieces_coords:
+        print("red piece coords: ", coord)
+
+    for coord in black_pieces_coords:
+        print("black piece coords: ", coord)
+
+    # Create the sprites
+    red_game_pieces = {}
+    for count, coord in enumerate(red_pieces_coords):
+        red_game_pieces["red_piece%d" % count] = Sprite(RED, CIRCLE_RAD, CIRCLE_RAD)
+        red_game_pieces["red_piece%d" % count].rect.x = coord[0]
+        red_game_pieces["red_piece%d" % count].rect.y = coord[1]
+
+
+    black_game_pieces = {}
+    for count, coord in enumerate(black_pieces_coords):
+        red_game_pieces["black_piece%d" % count] = Sprite(BLACK, CIRCLE_RAD, CIRCLE_RAD)
+        red_game_pieces["black_piece%d" % count].rect.x = coord[0]
+        red_game_pieces["black_piece%d" % count].rect.y = coord[1]
+
+    for i in red_game_pieces:
+        all_sprites_list.add(red_game_pieces[i])
+
+    for j in black_game_pieces:
+        all_sprites_list.add(black_game_pieces[j])
 
 
 # Initializing Pygame
@@ -88,33 +128,33 @@ surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
 all_sprites_list = pygame.sprite.Group()
 
 # Creating sprites with color and dimensions
-sprite1 = Sprite(RED, 100, 100)
-sprite2 = Sprite(GREEN, 100, 200)
-sprite3 = Sprite(BLUE, 200, 100)
-
-sprite1.rect.x = 0
-sprite1.rect.y = 0
-sprite2.rect.x = 100
-sprite2.rect.y = 100
-sprite3.rect.x = 200
-sprite3.rect.y = 200
-
-all_sprites_list.add(sprite1, sprite2, sprite3)
+# sprite1 = Sprite(RED, 100, 100)
+# sprite2 = Sprite(GREEN, 100, 200)
+# sprite3 = Sprite(BLUE, 200, 100)
+#
+# sprite1.rect.x = 0
+# sprite1.rect.y = 0
+# sprite2.rect.x = 100
+# sprite2.rect.y = 100
+# sprite3.rect.x = 200
+# sprite3.rect.y = 200
+#
+# all_sprites_list.add(sprite1, sprite2, sprite3)
 
 # Initializing the board
-# draw_board()
-# pygame.display.flip()
+draw_board()
+pygame.display.flip()
 
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             x_position, y_position = pygame.mouse.get_pos()
-            rect_width = 60
-            rect_height = 60
 
-            pygame.draw.rect(surface, RED, (x_position, y_position, rect_width, rect_height))
+            for sprite in all_sprites_list:
+                sprite.mouse_click_check(x_position, y_position)
+
             pygame.display.flip()
 
     all_sprites_list.update()
