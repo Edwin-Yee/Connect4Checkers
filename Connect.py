@@ -54,67 +54,27 @@ class Sprite(pygame.sprite.Sprite):
                 provide_legal_moves(self.rect.x, self.rect.y, BLACK)
 
 
-class LegalMoveIndicators(pygame.sprite.Sprite):
-    def __init__(self, image_file, location):
-        print("Spawned indicator")
-
-        self.image = pygame.image.load(image_file)
-        self.rect = self.image.get_rect()
-        self.rect.left, self.rect.top = location
-
-        # # Constructor. Pass in the color of the block,
-        # # and its x and y position
-        #
-        # # Call the parent class (Sprite) constructor
-        # pygame.sprite.Sprite.__init__(self)
-        #
-        # # Create an image of the block, and fill it with a color.
-        # # This could also be an image loaded from the disk.
-        # self.image = pygame.Surface([width, height])
-        # self.image.fill(color)
-        #
-        # # Fetch the rectangle object that has the dimensions of the image
-        # # Update the position of this object by setting the values of rect.x and rect.y
-        # self.rect = self.image.get_rect()
-
-        # super(LegalMoveIndicators, self).__init__()
-        # width = CIRCLE_RAD / 2
-        # height = CIRCLE_RAD / 2
-        # sprite_color = WHITE
-        #
-        # self.image = pygame.Surface([width, height])
-        # self.image.fill(sprite_color)
-        # self.color = sprite_color
-        #
-        # self.rect = self.image.get_rect()
-        # self.rect.x = 100
-        # self.rect.y = 100
-        indicator_group.add(self)
-        #
-        # pygame.display.flip()
-
-
 class Button(pygame.sprite.Sprite):
-    def __init__(self, pos, size=(32, 16), image=None):
+    def __init__(self, color, pos, size=(32, 16), image=None):
         super(Button, self).__init__()
         if image is None:
             self.rect = pygame.Rect(pos, size)
             self.image = pygame.Surface(size)
         else:
             self.image = pygame.Surface([28, 28])
-            self.image.fill(GREEN)
+            self.image.fill(color)
             self.rect = image.get_rect(topleft=pos)
 
         self.pressed = False
 
-    def update(self):
-        mouse_pos = pygame.mouse.get_pos()
-        mouse_clicked = pygame.mouse.get_pressed()[0]
-        if self.rect.collidepoint(*mouse_pos) and mouse_clicked:
-            print("BUTTON PRESSED!")
-            self.kill()  # Will remove itself from all pygame groups.
-            surface.fill(WHITE)
-            pygame.display.flip()
+    # def update(self):
+    #     mouse_pos = pygame.mouse.get_pos()
+    #     mouse_clicked = pygame.mouse.get_pressed()[0]
+    #     if self.rect.collidepoint(*mouse_pos) and mouse_clicked:
+    #         print("BUTTON PRESSED!")
+    #         self.kill()  # Will remove itself from all pygame groups.
+    #         surface.fill(WHITE)
+    #         pygame.display.flip()
 def initialize_board():
     game_board = np.zeros((NUM_ROWS, NUM_COLS))
     return game_board
@@ -202,41 +162,23 @@ def provide_legal_moves(x, y, color):
     print(x, y, color)
     if color == BLACK:
         if y - 2 * CIRCLE_RAD > 0 and surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(pos=(x, y - 4 * CIRCLE_RAD), image=image))
-            # indicator = LegalMoveIndicators("Five_Pointed_Star_Solid.svg.png", (100, 100))
-            # surface.blit(pygame.image.load("Five_Pointed_Star_Solid.svg.png"),
-            #              (100, 100))
-            # pygame.display.flip()
-            # surface.fill(WHITE)
-            # test_sprite = Sprite(GREEN, CIRCLE_RAD, CIRCLE_RAD)
-            # test_sprite.rect.x = 100
-            # test_sprite.rect.y = 100
-
-            # print("Legal move: ", (x, y - 2 * CIRCLE_RAD))
-            # draws a circle to the legal move square, TO-DO
-            # indicator_group.update()
-            # indicator_group.draw(surface)
-
-            # indicator.rect.x = x + 0.5 * CIRCLE_RAD
-            # indicator.rect.y = y - 3.5 * CIRCLE_RAD
-            # pygame.draw.circle(surface, WHITE, (x + 0.5 * CIRCLE_RAD, y - 3.5 * CIRCLE_RAD), CIRCLE_RAD / 2)
-
+            buttons.add(Button(GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
         if y - 2 * CIRCLE_RAD > 0 and x - 2 * CIRCLE_RAD > 0 and \
                 surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            print("Legal move: ", (x - 2 * CIRCLE_RAD, y - 2 * CIRCLE_RAD))
+            buttons.add(Button(GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
         if y - 2 * CIRCLE_RAD > 0 and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
                 surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            print("Legal move: ", (x + 2 * CIRCLE_RAD, y - 2 * CIRCLE_RAD))
+            buttons.add(Button(GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
 
     elif color == RED:
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED:
-            print("Legal move: ", (x, y + 2 * CIRCLE_RAD))
+            buttons.add(Button(BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x - 2 * CIRCLE_RAD > 0 and \
                 surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-            print("Legal move: ", (x - 2 * CIRCLE_RAD, y + 2 * CIRCLE_RAD))
+            buttons.add(Button(BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
                 surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-            print("Legal move: ", (x + 2 * CIRCLE_RAD, y + 2 * CIRCLE_RAD))
+            buttons.add(Button(BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
 
 
 
@@ -245,6 +187,9 @@ all_sprites_list = pygame.sprite.Group()
 # Initializing the board
 draw_board()
 pygame.display.flip()
+
+num_click = 0
+isButtonPressed = False
 
 while not game_over:
     for event in pygame.event.get():
@@ -257,7 +202,21 @@ while not game_over:
                 sprite.mouse_click_check(x_position, y_position)
 
             for sprite in buttons:
-                sprite.update()
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_clicked = pygame.mouse.get_pressed()[0]
+                if sprite.rect.collidepoint(*mouse_pos) and mouse_clicked:
+                    print("BUTTON PRESSED!")
+                    isButtonPressed = True
+
+                elif not isButtonPressed and num_click % 2 == 1 and not (sprite.rect.collidepoint(*mouse_pos) and mouse_clicked):
+                    print("Removed all buttons")
+                    for sprite2 in buttons:
+                        sprite2.kill()
+                        surface.fill(WHITE)
+                        pygame.display.flip()
+
+            isButtonPressed = False
+            num_click = num_click + 1
             pygame.display.flip()
 
     buttons.update()  # Calls the update method on every sprite in the group.
