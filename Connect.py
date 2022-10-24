@@ -34,8 +34,7 @@ indicator_group = pygame.sprite.Group
 # Initializing Pygame
 pygame.init()
 surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
-
-
+sprite_count = 0
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, sprite_color, width, height):
         super(Sprite, self).__init__()
@@ -45,14 +44,26 @@ class Sprite(pygame.sprite.Sprite):
 
         self.color = sprite_color
 
+        global sprite_count
+        self.name = "Sprite " + str(sprite_count)
+        sprite_count = sprite_count + 1
+
         self.rect = self.image.get_rect()
 
     def mouse_click_check(self, mouse_x, mouse_y):
         if self.rect.collidepoint(mouse_x, mouse_y):
             if self.color == RED:
                 provide_legal_moves(self.rect.x, self.rect.y, RED)
+                return True
             elif self.color == BLACK:
                 provide_legal_moves(self.rect.x, self.rect.y, BLACK)
+                return True
+
+            return False
+
+    def move(self, x_location, y_location):
+        self.rect.x = x_location
+        self.rect.y = y_location
 
 
 class Button(pygame.sprite.Sprite):
@@ -214,6 +225,7 @@ def provide_legal_moves(x, y, color):
 
 
 all_sprites_list = pygame.sprite.Group()
+current_click_sprite_list = pygame.sprite.Group()
 squares_list = pygame.sprite.Group()
 
 # Initializing the board
@@ -234,22 +246,26 @@ while not game_over:
             x_position, y_position = pygame.mouse.get_pos()
 
             for sprite in all_sprites_list:
-                sprite.mouse_click_check(x_position, y_position)
+                if sprite.mouse_click_check(x_position, y_position):
+                    current_click_sprite_list.add(sprite)
+                    print("Added sprite", sprite.name, "to current_click_sprite_list")
 
-            for sprite in buttons:
+            for button in buttons:
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_clicked = pygame.mouse.get_pressed()[0]
-                if sprite.rect.collidepoint(*mouse_pos) and mouse_clicked:
+                if button.rect.collidepoint(mouse_pos) and mouse_clicked:
                     print("BUTTON PRESSED!")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
                     isButtonPressed = True
 
-                elif not isButtonPressed and num_click % 2 == 1 and not (sprite.rect.collidepoint(*mouse_pos) and mouse_clicked):
+                elif not isButtonPressed and num_click % 2 == 1 and not (
+                        button.rect.collidepoint(*mouse_pos) and mouse_clicked):
                     print("Removed all buttons")
-                    for sprite2 in buttons:
-                        sprite2.kill()
+                    current_click_sprite_list.empty()
+                    for button2 in buttons:
+                        button2.kill()
                         surface.fill(WHITE)
                         pygame.display.flip()
-
             isButtonPressed = False
             num_click = num_click + 1
             pygame.display.flip()
