@@ -4,115 +4,13 @@ import random
 import math
 import sys
 
-# References (for Python sprites):
-    # https://realpython.com/lessons/creating-sprites/
-    # https://www.geeksforgeeks.org/pygame-creating-sprites/
-    # Button Sprite: https://stackoverflow.com/questions/39709065/making-pygame-sprites-disappear-in-python
-
-# Defining colors
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
-PALE_COLOR = (255, 223, 145)
-DARK_BROWN = (51, 39, 10)
-WHITE = (255, 255, 255)
-
-# Creating the board
-NUM_ROWS = 8
-NUM_COLS = 8
-
-# Initializing surface
-SURFACE_WIDTH = 400
-SURFACE_HEIGHT = 400
-
-CIRCLE_RAD = int((SURFACE_WIDTH/8)/2)
-game_over = False
-
-indicator_group = pygame.sprite.Group
+from Connect4Chess import global_
+from global_ import *
+from classes import Sprite
+from classes import BoardSquare
 
 # Initializing Pygame
 pygame.init()
-surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
-sprite_count = 0
-class Sprite(pygame.sprite.Sprite):
-    def __init__(self, sprite_color, width, height):
-        super(Sprite, self).__init__()
-
-        self.image = pygame.Surface([width, height])
-        self.image.fill(sprite_color)
-
-        self.color = sprite_color
-
-        global sprite_count
-        self.name = "Sprite " + str(sprite_count)
-        sprite_count = sprite_count + 1
-
-        self.rect = self.image.get_rect()
-
-    def mouse_click_check(self, mouse_x, mouse_y):
-        if self.rect.collidepoint(mouse_x, mouse_y):
-            if self.color == RED:
-                provide_legal_moves(self.rect.x, self.rect.y, RED)
-                return True
-            elif self.color == BLACK:
-                provide_legal_moves(self.rect.x, self.rect.y, BLACK)
-                return True
-
-            return False
-
-    def move(self, x_location, y_location):
-        self.rect.x = x_location
-        self.rect.y = y_location
-
-
-class Button(pygame.sprite.Sprite):
-    def __init__(self, color, pos, size=(32, 16), image=None):
-        super(Button, self).__init__()
-        if image is None:
-            self.rect = pygame.Rect(pos, size)
-            self.image = pygame.Surface(size)
-        else:
-            self.image = pygame.Surface([28, 28])
-            self.image.fill(color)
-            self.rect = image.get_rect(topleft=pos)
-
-        self.pressed = False
-
-    # def update(self):
-    #     mouse_pos = pygame.mouse.get_pos()
-    #     mouse_clicked = pygame.mouse.get_pressed()[0]
-    #     if self.rect.collidepoint(*mouse_pos) and mouse_clicked:
-    #         print("BUTTON PRESSED!")
-    #         self.kill()  # Will remove itself from all pygame groups.
-    #         surface.fill(WHITE)
-    #         pygame.display.flip()
-
-
-class BoardSquare(pygame.sprite.Sprite):
-    def __init__(self, square_color, width, height):
-        super(BoardSquare, self).__init__()
-
-        self.image = pygame.Surface([width, height])
-        self.image.fill(square_color)
-
-        self.color = square_color
-
-        self.rect = self.image.get_rect()
-
-
-def initialize_board():
-    game_board = np.zeros((NUM_ROWS, NUM_COLS))
-    return game_board
-
-
-def is_valid_position(game_board, row, col):
-    if row >= 8 or col >= 8 or row < 0 or col < 0:
-        return False  # Out of Bounds
-    if game_board[row, col] == 1:
-        return False  # Occupied space
-    else:
-        return True  # Not occupied
 
 
 def draw_board():
@@ -192,37 +90,6 @@ def draw_board():
         squares_list.add(black_squares[p])
 
 
-image = pygame.Surface((100, 40))
-image.fill((255, 0, 0))
-buttons = pygame.sprite.Group()
-
-# Legal moves are "jumping" over another piece in front of your piece. Pieces with no other pieces in
-# front will have no legal moves.
-
-
-def provide_legal_moves(x, y, color):
-
-    print(x, y, color)
-    if color == BLACK:
-        if y - 2 * CIRCLE_RAD > 0 and surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
-        if y - 2 * CIRCLE_RAD > 0 and x - 2 * CIRCLE_RAD > 0 and \
-                surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
-        if y - 2 * CIRCLE_RAD > 0 and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
-                surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
-
-    elif color == RED:
-        if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED:
-            buttons.add(Button(BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
-        if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x - 2 * CIRCLE_RAD > 0 and \
-                surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-            buttons.add(Button(BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
-        if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
-                surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-            buttons.add(Button(BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
-
 
 all_sprites_list = pygame.sprite.Group()
 current_click_sprite_list = pygame.sprite.Group()
@@ -282,5 +149,5 @@ while not game_over:
 
     pygame.display.update()
 
-
     pygame.display.flip()
+
