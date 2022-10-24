@@ -8,6 +8,8 @@ import sys
     # https://realpython.com/lessons/creating-sprites/
     # https://www.geeksforgeeks.org/pygame-creating-sprites/
     # Button Sprite: https://stackoverflow.com/questions/39709065/making-pygame-sprites-disappear-in-python
+# References (for closest number to k in list algorithm) used in Sprite move:
+    # https://www.geeksforgeeks.org/python-find-closest-number-to-k-in-given-list/
 
 # This file holds all the global variables
 # Defining colors
@@ -32,6 +34,10 @@ CIRCLE_RAD = int((SURFACE_WIDTH/8)/2)
 game_over = False
 sprite_count = 0
 
-buttons = pygame.sprite.Group()
 
 surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
+
+buttons = pygame.sprite.Group()
+all_sprites_list = pygame.sprite.Group()
+current_click_sprite_list = pygame.sprite.Group()
+squares_list = pygame.sprite.Group()
