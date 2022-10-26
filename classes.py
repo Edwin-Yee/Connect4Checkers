@@ -32,7 +32,7 @@ class Sprite(pygame.sprite.Sprite):
 
             return False
 
-    def move(self, x_location, y_location):
+    def move(self, sprite_color, x_location, y_location):
         print("Received", x_location, y_location)
         strict_x_locations = [CIRCLE_RAD / 2, SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
                               2 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 3 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
@@ -49,8 +49,26 @@ class Sprite(pygame.sprite.Sprite):
         list_y = np.asarray(strict_y_locations)
         index_y = (np.abs(list_y - y_location)).argmin()
 
-        self.rect.x = list_x[index_x]
-        self.rect.y = list_y[index_y]
+        if sprite_color == RED:
+            # Check for opponent's color? (Implementing Capture)
+            if surface.get_at((int(x_location), int(y_location))) == BLACK:
+
+                self.rect.x = list_x[index_x]
+                self.rect.y = list_y[index_y]
+            else:
+                self.rect.x = list_x[index_x]
+                self.rect.y = list_y[index_y]
+        elif sprite_color == BLACK:
+            # Check for opponent's color? (Implementing Capture)
+            if surface.get_at((int(x_location), int(y_location))) == RED:
+                self.rect.x = list_x[index_x]
+                self.rect.y = list_y[index_y]
+            else:
+                self.rect.x = list_x[index_x]
+                self.rect.y = list_y[index_y]
+
+
+
 
 
 class Button(pygame.sprite.Sprite):
@@ -99,25 +117,31 @@ def provide_legal_moves(x, y, color):
 
     print("Showing legal move: ", x, y, color)
     if color == BLACK:
-        print(surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))))
+        if y - 2 * CIRCLE_RAD > 0:
+            print("Black checker: ", surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))))
         if y - 2 * CIRCLE_RAD > 0 and surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == BLACK:
             buttons.add(Button("Vertical", GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
-            print("Checker in front!")
+            print("Black checker in front!")
         if y - 2 * CIRCLE_RAD > 0 and x - 2 * CIRCLE_RAD > 0 and \
                 surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
             buttons.add(Button("Left Diagonal", GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
-            print("Checker in left diagonal!")
+            print("Black checker in left diagonal!")
         if y - 2 * CIRCLE_RAD > 0 and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
                 surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
             buttons.add(Button("Right Diagonal", GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
-            print("Checker in right diagonal!")
+            print("Black checker in right diagonal!")
 
     elif color == RED:
+        if y - 2 * CIRCLE_RAD < SURFACE_HEIGHT:
+            print("Red checker: ", surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))))
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED:
             buttons.add(Button("Vertical", BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
+            print("Red checker in front!")
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x - 2 * CIRCLE_RAD > 0 and \
                 surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
             buttons.add(Button("Left Diagonal", BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
+            print("Red checker in left diagonal!")
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
                 surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
             buttons.add(Button("Right Diagonal", BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
+            print("Red checker in right diagonal!")

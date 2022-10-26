@@ -47,21 +47,24 @@ while not game_over:
 
                 if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 1 PRESSED!")
-                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    curr_sprite_color = current_click_sprite_list.sprites()[0].color
+                    current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     for button in buttons:
                         button.kill()
                         pygame.display.flip()
                 elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 2 PRESSED!")
-                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    curr_sprite_color = current_click_sprite_list.sprites()[0].color
+                    current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     for button in buttons:
                         button.kill()
                         pygame.display.flip()
                 elif button_3.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 3 PRESSED!")
-                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    curr_sprite_color = current_click_sprite_list.sprites()[0].color
+                    current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     for button in buttons:
                         button.kill()
@@ -81,14 +84,16 @@ while not game_over:
 
                 if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 1 PRESSED! (EDGE CASE)")
-                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    curr_sprite_color = current_click_sprite_list.sprites()[0].color
+                    current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     for button in buttons:
                         button.kill()
                         pygame.display.flip()
                 elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 2 PRESSED! (EDGE CASE)")
-                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    curr_sprite_color = current_click_sprite_list.sprites()[0].color
+                    current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     for button in buttons:
                         button.kill()
@@ -106,7 +111,8 @@ while not game_over:
 
                 if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 1 PRESSED! (ONLY 1 EDGE CASE)")
-                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    curr_sprite_color = current_click_sprite_list.sprites()[0].color
+                    current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     for button in buttons:
                         button.kill()
