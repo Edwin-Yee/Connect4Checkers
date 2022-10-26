@@ -33,11 +33,15 @@ class Sprite(pygame.sprite.Sprite):
             return False
 
     def move(self, x_location, y_location):
-        strict_x_locations = [0, SURFACE_WIDTH / 8, 2 * SURFACE_WIDTH / 8, 3 * SURFACE_WIDTH / 8, 4 * SURFACE_WIDTH / 8,
-                              5 * SURFACE_WIDTH / 8, 6 * SURFACE_WIDTH / 8, 7 * SURFACE_WIDTH / 8]
-        strict_y_locations = [0, SURFACE_HEIGHT / 8, 2 * SURFACE_HEIGHT / 8, 3 * SURFACE_HEIGHT / 8,
-                              4 * SURFACE_HEIGHT / 8, 5 * SURFACE_HEIGHT / 8, 6 * SURFACE_HEIGHT / 8,
-                              7 * SURFACE_HEIGHT / 8]
+        print("Received", x_location, y_location)
+        strict_x_locations = [CIRCLE_RAD / 2, SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
+                              2 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 3 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
+                              4 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 5 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
+                              6 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 7 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2]
+        strict_y_locations = [CIRCLE_RAD / 2, SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
+                              2 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 3 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
+                              4 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 5 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
+                              6 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 7 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2]
 
         list_x = np.asarray(strict_x_locations)
         index_x = (np.abs(list_x - x_location)).argmin()
@@ -45,12 +49,12 @@ class Sprite(pygame.sprite.Sprite):
         list_y = np.asarray(strict_y_locations)
         index_y = (np.abs(list_y - y_location)).argmin()
 
-        self.rect.x = list_x[index_x] + CIRCLE_RAD / 2
-        self.rect.y = list_y[index_y] + CIRCLE_RAD / 2
+        self.rect.x = list_x[index_x]
+        self.rect.y = list_y[index_y]
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, color, pos, size=(32, 16), image=None):
+    def __init__(self, state, color, pos, size=(32, 16), image=None):
         super(Button, self).__init__()
         if image is None:
             self.rect = pygame.Rect(pos, size)
@@ -60,6 +64,7 @@ class Button(pygame.sprite.Sprite):
             self.image.fill(color)
             self.rect = image.get_rect(topleft=pos)
 
+        self.state = state
         self.pressed = False
 
     # def update(self):
@@ -96,23 +101,23 @@ def provide_legal_moves(x, y, color):
     if color == BLACK:
         print(surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))))
         if y - 2 * CIRCLE_RAD > 0 and surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
+            buttons.add(Button("Vertical", GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
             print("Checker in front!")
         if y - 2 * CIRCLE_RAD > 0 and x - 2 * CIRCLE_RAD > 0 and \
                 surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
+            buttons.add(Button("Left Diagonal", GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
             print("Checker in left diagonal!")
         if y - 2 * CIRCLE_RAD > 0 and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
                 surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK:
-            buttons.add(Button(GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
+            buttons.add(Button("Right Diagonal", GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
             print("Checker in right diagonal!")
 
     elif color == RED:
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED:
-            buttons.add(Button(BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
+            buttons.add(Button("Vertical", BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x - 2 * CIRCLE_RAD > 0 and \
                 surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-            buttons.add(Button(BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
+            buttons.add(Button("Left Diagonal", BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
         if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
                 surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-            buttons.add(Button(BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
+            buttons.add(Button("Right Diagonal", BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))

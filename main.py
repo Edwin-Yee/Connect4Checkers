@@ -39,41 +39,88 @@ while not game_over:
                     print("Added sprite", sprite.name, "to current_click_sprite_list")
                     isSpriteClicked = True
 
-            print("--------") # Still Bugs
-            if len(buttons) > 2:
+            print("--------")
+            if len(buttons) == 3:
                 button_1 = buttons.sprites()[0]  # Middle Button
                 button_2 = buttons.sprites()[1]  # Left Button
                 button_3 = buttons.sprites()[2]  # Right Button
-            elif len(buttons) > 1:
-                button_1 = buttons.sprites()[0]  # Middle Button
-                button_2 = buttons.sprites()[1]  # Left/Right Button
-                button_3 = buttons.sprites()[1]  # Right/Right Button
 
-            if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
-                print("BUTTON 1 PRESSED!")
-                current_click_sprite_list.sprites()[0].move(x_position, y_position)
-                current_click_sprite_list.empty()
-                for button in buttons:
-                    button.kill()
-                    pygame.display.flip()
-            elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
-                print("BUTTON 2 PRESSED!")
-                for button in buttons:
-                    button.kill()
-                    pygame.display.flip()
-            elif button_3.rect.collidepoint(x_position, y_position) and mouse_clicked:
-                print("BUTTON 3 PRESSED!")
-                for button in buttons:
-                    button.kill()
-                    pygame.display.flip()
-            elif not button_1.rect.collidepoint(x_position, y_position) \
-                    and not button_2.rect.collidepoint(x_position, y_position) \
-                    and not button_3.rect.collidepoint(x_position, y_position) \
-                    and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
-                print("No Button has been pressed")
-                for button in buttons:
-                    button.kill()
-                    pygame.display.flip()
+                if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
+                    print("BUTTON 1 PRESSED!")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    current_click_sprite_list.empty()
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+                elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
+                    print("BUTTON 2 PRESSED!")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    current_click_sprite_list.empty()
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+                elif button_3.rect.collidepoint(x_position, y_position) and mouse_clicked:
+                    print("BUTTON 3 PRESSED!")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    current_click_sprite_list.empty()
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+                elif not button_1.rect.collidepoint(x_position, y_position) \
+                        and not button_2.rect.collidepoint(x_position, y_position) \
+                        and not button_3.rect.collidepoint(x_position, y_position) \
+                        and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
+                    print("No Button has been pressed")
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+            elif len(buttons) == 2:
+
+                button_1 = buttons.sprites()[0]  # Some Button
+                button_2 = buttons.sprites()[1]  # Some Button
+
+                if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
+                    print("BUTTON 1 PRESSED! (EDGE CASE)")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    current_click_sprite_list.empty()
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+                elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
+                    print("BUTTON 2 PRESSED! (EDGE CASE)")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    current_click_sprite_list.empty()
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+                elif not button_1.rect.collidepoint(x_position, y_position) \
+                        and not button_2.rect.collidepoint(x_position, y_position) \
+                        and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
+                    print("No Button has been pressed")
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+            elif len(buttons) == 1:
+
+                button_1 = buttons.sprites()[0]  # Some Button
+
+                if button_1.rect.collidepoint(x_position, y_position) and mouse_clicked:
+                    print("BUTTON 1 PRESSED! (ONLY 1 EDGE CASE)")
+                    current_click_sprite_list.sprites()[0].move(x_position, y_position)
+                    current_click_sprite_list.empty()
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+
+                elif not button_1.rect.collidepoint(x_position, y_position) \
+                        and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
+                    print("No Button has been pressed")
+                    for button in buttons:
+                        button.kill()
+                        pygame.display.flip()
+
+
+
 
 
             # for button in buttons:
