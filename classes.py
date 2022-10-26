@@ -49,7 +49,6 @@ class Sprite(pygame.sprite.Sprite):
         self.rect.y = list_y[index_y] + CIRCLE_RAD / 2
 
 
-
 class Button(pygame.sprite.Sprite):
     def __init__(self, color, pos, size=(32, 16), image=None):
         super(Button, self).__init__()

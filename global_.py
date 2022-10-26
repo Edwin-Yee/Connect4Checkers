@@ -39,5 +39,5 @@ surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
 
 buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
-current_click_sprite_list = pygame.sprite.Group()
 squares_list = pygame.sprite.Group()
+current_click_sprite_list = pygame.sprite.Group()
