@@ -3,6 +3,8 @@ import pygame
 import random
 import math
 import sys
+import neat
+import os
 
 from Connect4Chess import global_
 from global_ import *
@@ -24,6 +26,10 @@ num_click = 0
 isButtonPressed = False
 isSpriteClicked = False
 
+# class ConnectGame:
+#     def __init__(self, window, width, height):
+#         self.game = Game(window, width, height)
+# TODO put game into separate class with initialization
 
 while not game_over:
     for event in pygame.event.get():
@@ -164,4 +170,53 @@ while not game_over:
     pygame.display.update()
 
     pygame.display.flip()
+
+
+
+# def eval_genomes(genomes, config):
+#     # Genomes is a list of tuples
+#     # Every AI playing against every other AI (cut by i+1)
+#     width, height = SURFACE_WIDTH, SURFACE_HEIGHT
+#     window = pygame.display.set_mode((width, height))
+#
+#     for i, (genome_id1, genome1) in enumerate(genomes):
+#
+#         # Check out of bounds
+#         if i + 1 == len(genomes):
+#             break
+#
+#         genome1.fitness = 0     # initialize fitness level
+#         for genome_id2, genome2 in genomes[i+1:]:
+#             if genome2.fitness is None:
+#                 genome2.fitness = 0     # initialize fitness if not set before
+#
+#             game = thegame()
+#             game.train_ai(genome1, genome2, config) # TODO
+# def run_neural_network(config):
+#     # example usage
+#     # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-2')
+#     population = neat.Population(config)
+#
+#     # See generations, data
+#     population.add_reporter(neat.StdOutReporter(True))
+#     statistics = neat.StatisticsReporter()
+#     population.add_reporter(statistics)
+#
+#     # Save a checkpoint after x generations, currently set to 1
+#     population.add_reporter(neat.Checkpointer(1))
+#
+#     # Max gen: set to 50
+#     best_winner = population.run(eval_genomes, 50)
+#
+#
+# if __name__ == "__main__":
+#     local_directory = os.path.dirname(__file__)
+#     config_path = os.path.join(local_directory, "config.txt")
+#
+#     # load config file
+#     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+#                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
+#                          config_path)
+#
+#     run_neural_network(config)
 

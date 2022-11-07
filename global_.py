@@ -10,6 +10,10 @@ import sys
     # Button Sprite: https://stackoverflow.com/questions/39709065/making-pygame-sprites-disappear-in-python
 # References (for closest number to k in list algorithm) used in Sprite move:
     # https://www.geeksforgeeks.org/python-find-closest-number-to-k-in-given-list/
+# References (for Neat Python tutorial):
+    # Python Pong AI Tutorial - Using NEAT, Tech With Tim, https://www.youtube.com/watch?v=2f6TmKm7yx0
+    # Python Flappy Bird AI Tutorial (with NEAT) - NEAT Configuration and Explanation, Tech With Tim,
+    # https://www.youtube.com/watch?v=MPFWsRjDmnU&t=747s
 
 # This file holds all the global variables
 # Defining colors
