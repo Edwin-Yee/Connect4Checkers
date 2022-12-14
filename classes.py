@@ -125,8 +125,11 @@ def provide_legal_moves(x, y, color):
                 # Jump over own piece
                 buttons.add(Button("Vertical", GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
                 print("Black checker in front!")
-            elif surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == RED:
-                # Capture opponent piece
+            elif surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == RED and \
+                    surface.get_at((int(x), int(y - 4 * CIRCLE_RAD))) != RED and \
+                    surface.get_at((int(x), int(y - 4 * CIRCLE_RAD))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square
+
                 buttons.add(Button("Vertical", GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
                 print("Red checker in front!")
 
@@ -136,8 +139,11 @@ def provide_legal_moves(x, y, color):
                 buttons.add(Button("Left Diagonal", GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
                 print("Black checker in left diagonal!")
             elif x - 2 * CIRCLE_RAD > 0 and \
-                    surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == RED:
-                # Capture opponent piece
+                    surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == RED and \
+                    surface.get_at((int(x - 4), int(y - 4 * CIRCLE_RAD))) != RED and \
+                    surface.get_at((int(x - 4), int(y - 4 * CIRCLE_RAD))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square
+
                 buttons.add(Button("Left Diagonal", GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
                 print("Red checker in left diagonal!")
 
@@ -147,8 +153,11 @@ def provide_legal_moves(x, y, color):
                 buttons.add(Button("Right Diagonal", GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
                 print("Black checker in right diagonal!")
             elif x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
-                    surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == RED:
-                # Capture opponent piece
+                    surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == RED and \
+                    surface.get_at((int(x + 4), int(y - 4 * CIRCLE_RAD))) != RED and \
+                    surface.get_at((int(x + 4), int(y - 4 * CIRCLE_RAD))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square
+
                 buttons.add(Button("Right Diagonal", GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
                 print("Red checker in right diagonal!")
 
@@ -161,8 +170,11 @@ def provide_legal_moves(x, y, color):
                 # Jump over own piece
                 buttons.add(Button("Vertical", BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
                 print("Red checker in front!")
-            elif surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == BLACK:
-                # Capture opponent piece
+            elif surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == BLACK and \
+                    surface.get_at((int(x), int(y + 4 * CIRCLE_RAD))) != RED and \
+                    surface.get_at((int(x), int(y + 4 * CIRCLE_RAD))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square:
+
                 buttons.add(Button("Vertical", BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
                 print("Black checker in front!")
 
@@ -172,8 +184,11 @@ def provide_legal_moves(x, y, color):
                 buttons.add(Button("Left Diagonal", BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
                 print("Red checker in left diagonal!")
             elif x - 2 * CIRCLE_RAD > 0 and \
-                    surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == BLACK:
-                # Capture opponent piece
+                    surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == BLACK and \
+                    surface.get_at((int(x - 4), int(y + 4 * CIRCLE_RAD))) != RED and \
+                    surface.get_at((int(x - 4), int(y + 4 * CIRCLE_RAD))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square
+
                 buttons.add(Button("Left Diagonal", BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
                 print("Black checker in left diagonal!")
 
@@ -183,19 +198,10 @@ def provide_legal_moves(x, y, color):
                 buttons.add(Button("Right Diagonal", BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
                 print("Red checker in right diagonal!")
             elif x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
-                    surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == BLACK:
-                # Capture opponent piece
+                    surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == BLACK and \
+                    surface.get_at((int(x + 4), int(y + 4 * CIRCLE_RAD))) != RED and \
+                    surface.get_at((int(x + 4), int(y + 4 * CIRCLE_RAD))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square
                 buttons.add(Button("Right Diagonal", BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
                 print("Black checker in right diagonal!")
 
-        # if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED:
-        #     buttons.add(Button("Vertical", BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
-        #     print("Red checker in front!")
-        # if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x - 2 * CIRCLE_RAD > 0 and \
-        #         surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-        #     buttons.add(Button("Left Diagonal", BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
-        #     print("Red checker in left diagonal!")
-        # if y + 2 * CIRCLE_RAD < SURFACE_HEIGHT and x + 2 * CIRCLE_RAD < SURFACE_WIDTH and \
-        #         surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED:
-        #     buttons.add(Button("Right Diagonal", BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
-        #     print("Red checker in right diagonal!")

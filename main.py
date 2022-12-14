@@ -31,6 +31,12 @@ isSpriteClicked = False
 #         self.game = Game(window, width, height)
 # TODO put game into separate class with initialization
 
+def remove_buttons():
+    for inner_button in buttons:
+        inner_button.kill()
+        pygame.display.flip()
+
+
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -41,9 +47,15 @@ while not game_over:
 
             for sprite in all_sprites_list:
                 if sprite.mouse_click_check(x_position, y_position):
-                    current_click_sprite_list.add(sprite)
-                    print("Added sprite", sprite.name, "to current_click_sprite_list")
-                    isSpriteClicked = True
+                    if num_click % 2 == 0:
+                        current_click_sprite_list.add(sprite)
+                        print("Added sprite", sprite.name, "to current_click_sprite_list")
+                        isSpriteClicked = True
+                    else:
+                        # re-clicked on sprite, ignore action
+                        print("Re-clicked on sprite")
+                        current_click_sprite_list.empty()
+                        remove_buttons()
 
             print("--------")
             if len(buttons) == 3:
@@ -56,33 +68,30 @@ while not game_over:
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    remove_buttons()
+
                 elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 2 PRESSED!")
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    remove_buttons()
+
                 elif button_3.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 3 PRESSED!")
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    remove_buttons()
+
                 elif not button_1.rect.collidepoint(x_position, y_position) \
                         and not button_2.rect.collidepoint(x_position, y_position) \
                         and not button_3.rect.collidepoint(x_position, y_position) \
                         and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
                     print("No Button has been pressed")
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    current_click_sprite_list.empty()
+                    remove_buttons()
+
             elif len(buttons) == 2:
 
                 button_1 = buttons.sprites()[0]  # Some Button
@@ -93,24 +102,22 @@ while not game_over:
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    remove_buttons()
+
                 elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 2 PRESSED! (EDGE CASE)")
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    remove_buttons()
+
                 elif not button_1.rect.collidepoint(x_position, y_position) \
                         and not button_2.rect.collidepoint(x_position, y_position) \
                         and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
                     print("No Button has been pressed")
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    current_click_sprite_list.empty()
+                    remove_buttons()
+
             elif len(buttons) == 1:
 
                 button_1 = buttons.sprites()[0]  # Some Button
@@ -120,19 +127,13 @@ while not game_over:
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
+                    remove_buttons()
 
                 elif not button_1.rect.collidepoint(x_position, y_position) \
                         and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
                     print("No Button has been pressed")
-                    for button in buttons:
-                        button.kill()
-                        pygame.display.flip()
-
-
-
+                    current_click_sprite_list.empty()
+                    remove_buttons()
 
 
             # for button in buttons:
@@ -170,6 +171,7 @@ while not game_over:
     pygame.display.update()
 
     pygame.display.flip()
+
 
 
 

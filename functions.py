@@ -22,6 +22,7 @@ def is_valid_position(game_board, row, col):
     else:
         return True  # Not occupied
 
+
 def draw_board():
     num = 0
 
