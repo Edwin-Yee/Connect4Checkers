@@ -38,8 +38,9 @@ CIRCLE_RAD = int((SURFACE_WIDTH/8)/2)
 game_over = False
 sprite_count = 0
 
+extra_space_for_score = 300
 
-surface = pygame.display.set_mode((SURFACE_WIDTH, SURFACE_HEIGHT))
+surface = pygame.display.set_mode((SURFACE_WIDTH + extra_space_for_score, SURFACE_HEIGHT))
 
 buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()

@@ -19,22 +19,63 @@ pygame.init()
 draw_board()
 squares_list.update()
 squares_list.draw(surface)
+player_state = 0
 
+player_red_score = 0
+player_black_score = 0
+textX = surface.get_width() - 275
+red_textY = 100
+black_textY = 200
+font = pygame.font.Font("freesansbold.ttf", 24)
+
+def show_score():
+    score_red = font.render("Player Red Score: " + str(player_red_score), True, (255, 255, 255))
+    score_black = font.render("Player Black Score: " + str(player_black_score), True, (255, 255, 255))
+
+    # Draw a black rectangle to cover up the previous score
+    pygame.draw.rect(surface, (0, 0, 0), pygame.Rect(textX, red_textY, 500, 500))
+    surface.blit(score_red, (textX, red_textY))
+    surface.blit(score_black, (textX, black_textY))
+
+
+show_score()
 pygame.display.flip()
 
 num_click = 0
 isButtonPressed = False
 isSpriteClicked = False
 
+
 # class ConnectGame:
 #     def __init__(self, window, width, height):
 #         self.game = Game(window, width, height)
 # TODO put game into separate class with initialization
 
+
 def remove_buttons():
     for inner_button in buttons:
         inner_button.kill()
         pygame.display.flip()
+
+
+def increment_score(state_player):
+    global player_red_score
+    global player_black_score
+
+    if state_player % 2 == 0:
+        # Player black's turn
+        player_black_score += 1
+
+    else:
+        # Player red's turn
+        player_red_score += 1
+
+    show_score()
+
+
+
+
+
 
 
 while not game_over:
@@ -52,7 +93,8 @@ while not game_over:
                         print("Added sprite", sprite.name, "to current_click_sprite_list")
                         isSpriteClicked = True
                     else:
-                        # re-clicked on sprite, ignore action
+                        # re-clicked on sprite, ignore action (remove sprites stored in the list)
+                        # no update to player state, still the same player's turn
                         print("Re-clicked on sprite")
                         current_click_sprite_list.empty()
                         remove_buttons()
@@ -70,12 +112,28 @@ while not game_over:
                     current_click_sprite_list.empty()
                     remove_buttons()
 
+                    print(button_1.get_state())
+
+                    if button_1.get_state() == "Vertical Capture":
+                        print("WORKING CAPTURE VERTICAL")
+                        increment_score(player_state)
+
+                    player_state += 1
+
                 elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 2 PRESSED!")
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
                     current_click_sprite_list.sprites()[0].move(curr_sprite_color, x_position, y_position)
                     current_click_sprite_list.empty()
                     remove_buttons()
+
+                    print(button_2.get_state())
+
+                    if button_2.get_state() == "Left Diagonal Capture":
+                        print("WORKING CAPTURE LEFT DIAGONAL")
+                        increment_score(player_state)
+
+                    player_state += 1
 
                 elif button_3.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 3 PRESSED!")
@@ -84,10 +142,19 @@ while not game_over:
                     current_click_sprite_list.empty()
                     remove_buttons()
 
+                    print(button_3.get_state())
+
+                    if button_3.get_state() == "Right Diagonal Capture":
+                        print("WORKING CAPTURE RIGHT DIAGONAL")
+                        increment_score(player_state)
+
+                    player_state += 1
+
                 elif not button_1.rect.collidepoint(x_position, y_position) \
                         and not button_2.rect.collidepoint(x_position, y_position) \
                         and not button_3.rect.collidepoint(x_position, y_position) \
                         and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
+                    # no update to player state, still the same player's turn
                     print("No Button has been pressed")
                     current_click_sprite_list.empty()
                     remove_buttons()
@@ -104,6 +171,15 @@ while not game_over:
                     current_click_sprite_list.empty()
                     remove_buttons()
 
+                    print(button_1.get_state())
+
+                    if button_1.get_state() == "Vertical Capture" or button_1.get_state() == "Left Diagonal Capture" \
+                            or button_1.get_state() == "Right Diagonal Capture":
+                        print("WORKING CAPTURE 2 BUTTON")
+                        increment_score(player_state)
+
+                    player_state += 1
+
                 elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
                     print("BUTTON 2 PRESSED! (EDGE CASE)")
                     curr_sprite_color = current_click_sprite_list.sprites()[0].color
@@ -111,9 +187,19 @@ while not game_over:
                     current_click_sprite_list.empty()
                     remove_buttons()
 
+                    print(button_2.get_state())
+
+                    if button_2.get_state() == "Vertical Capture" or button_2.get_state() == "Left Diagonal Capture" \
+                            or button_2.get_state() == "Right Diagonal Capture":
+                        print("WORKING CAPTURE 2 BUTTON")
+                        increment_score(player_state)
+
+                    player_state += 1
+
                 elif not button_1.rect.collidepoint(x_position, y_position) \
                         and not button_2.rect.collidepoint(x_position, y_position) \
                         and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
+                    # no update to player state, still the same player's turn
                     print("No Button has been pressed")
                     current_click_sprite_list.empty()
                     remove_buttons()
@@ -129,8 +215,18 @@ while not game_over:
                     current_click_sprite_list.empty()
                     remove_buttons()
 
+                    print(button_1.get_state())
+
+                    if button_1.get_state() == "Vertical Capture" or button_1.get_state() == "Left Diagonal Capture" \
+                            or button_1.get_state() == "Right Diagonal Capture":
+                        print("WORKING CAPTURE 1 BUTTON")
+                        increment_score(player_state)
+
+                    player_state += 1
+
                 elif not button_1.rect.collidepoint(x_position, y_position) \
                         and not isSpriteClicked and mouse_clicked and num_click % 2 == 1:
+                    # no update to player state, still the same player's turn
                     print("No Button has been pressed")
                     current_click_sprite_list.empty()
                     remove_buttons()
