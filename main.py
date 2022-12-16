@@ -32,8 +32,9 @@ def show_score():
     score_red = font.render("Player Red Score: " + str(player_red_score), True, (255, 255, 255))
     score_black = font.render("Player Black Score: " + str(player_black_score), True, (255, 255, 255))
 
-    # Draw a black rectangle to cover up the previous score
-    pygame.draw.rect(surface, (0, 0, 0), pygame.Rect(textX, red_textY, 500, 500))
+    # Draw a gray rectangle to cover up the previous score (not black because we are detecting for the black color
+    # when showing the legal moves)
+    pygame.draw.rect(surface, (50, 50, 50), pygame.Rect(surface.get_width() - extra_space_for_score, 0, 500, 500))
     surface.blit(score_red, (textX, red_textY))
     surface.blit(score_black, (textX, black_textY))
 
@@ -71,11 +72,6 @@ def increment_score(state_player):
         player_red_score += 1
 
     show_score()
-
-
-
-
-
 
 
 while not game_over:

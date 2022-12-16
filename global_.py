@@ -25,6 +25,7 @@ BLACK = (0, 0, 0)
 PALE_COLOR = (255, 223, 145)
 DARK_BROWN = (51, 39, 10)
 WHITE = (255, 255, 255)
+GRAY = (50, 50, 50)
 
 # Creating the board
 NUM_ROWS = 8
