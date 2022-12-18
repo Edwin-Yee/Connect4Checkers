@@ -82,8 +82,11 @@ class Button(pygame.sprite.Sprite):
         self.state = state
         self.pressed = False
 
-    def get_state(self):
+    def get_state(self) -> str:
         return self.state
+
+    def get_position(self) -> tuple:
+        return self.rect.x, self.rect.y
 
     # def update(self):
     #     mouse_pos = pygame.mouse.get_pos()
