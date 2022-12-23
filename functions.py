@@ -15,7 +15,7 @@ def initialize_board():
 
 
 def is_valid_position(game_board, row, col):
-    if row >= 8 or col >= 8 or row < 0 or col < 0:
+    if row >= NUM_ROWS or col >= NUM_COLS or row < 0 or col < 0:
         return False  # Out of Bounds
     if game_board[row, col] == 1:
         return False  # Occupied space
@@ -26,18 +26,17 @@ def is_valid_position(game_board, row, col):
 def draw_board():
     num = 0
 
-    red_pieces_coords = []
-    black_pieces_coords = []
-    brown_board_square_coords = []
-    black_board_square_coords = []
-
     for row in range(NUM_ROWS):
         num = num + 1
         for col in range(NUM_COLS):
             num = num + 1
 
             # Drawing the game board visuals
-            if num % 2 == 1:
+            if row == 3 and col == 3 or row == 4 and col == 4:
+                winning_board_square_silver_coords.append((row * SURFACE_WIDTH / NUM_COLS, col * SURFACE_HEIGHT / NUM_ROWS))
+            elif row == 3 and col == 4 or row == 4 and col == 3:
+                winning_board_square_gold_coords.append((row * SURFACE_WIDTH / NUM_COLS, col * SURFACE_HEIGHT / NUM_ROWS))
+            elif num % 2 == 1:
                 brown_board_square_coords.append((row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8))
                 # pygame.draw.rect(surface, DARK_BROWN,
                 # pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
@@ -87,6 +86,18 @@ def draw_board():
         black_squares["black_square%d" % count].rect.x = coord[0]
         black_squares["black_square%d" % count].rect.y = coord[1]
 
+    winning_squares_silver = {}
+    for count, coord in enumerate(winning_board_square_silver_coords):
+        winning_squares_silver["winning_square_silver%d" % count] = BoardSquare(SILVER, SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8)
+        winning_squares_silver["winning_square_silver%d" % count].rect.x = coord[0]
+        winning_squares_silver["winning_square_silver%d" % count].rect.y = coord[1]
+
+    winning_squares_gold = {}
+    for count, coord in enumerate(winning_board_square_gold_coords):
+        winning_squares_gold["winning_square_gold%d" % count] = BoardSquare(GOLD, SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8)
+        winning_squares_gold["winning_square_gold%d" % count].rect.x = coord[0]
+        winning_squares_gold["winning_square_gold%d" % count].rect.y = coord[1]
+
     for i in red_game_pieces:
         all_sprites_list.add(red_game_pieces[i])
 
@@ -98,3 +109,28 @@ def draw_board():
 
     for p in black_squares:
         squares_list.add(black_squares[p])
+
+    for t in winning_squares_silver:
+        squares_list.add(winning_squares_silver[t])
+
+    for m in winning_squares_gold:
+        squares_list.add(winning_squares_gold[m])
+
+
+def find_strict_x_y(x_location, y_location):
+    strict_x_locations = [CIRCLE_RAD / 2, SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
+                          2 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 3 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
+                          4 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 5 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
+                          6 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 7 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2]
+    strict_y_locations = [CIRCLE_RAD / 2, SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
+                          2 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 3 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
+                          4 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 5 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
+                          6 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 7 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2]
+
+    list_x = np.asarray(strict_x_locations)
+    index_x = (np.abs(list_x - x_location)).argmin()
+
+    list_y = np.asarray(strict_y_locations)
+    index_y = (np.abs(list_y - y_location)).argmin()
+
+    return index_x, index_y

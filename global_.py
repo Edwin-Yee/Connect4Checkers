@@ -26,20 +26,25 @@ PALE_COLOR = (255, 223, 145)
 DARK_BROWN = (51, 39, 10)
 WHITE = (255, 255, 255)
 GRAY = (50, 50, 50)
+GOLD = (255, 223, 0)
+SILVER = (192, 192, 192)
 
 # Creating the board
 NUM_ROWS = 8
 NUM_COLS = 8
 
-# Initializing surface
-SURFACE_WIDTH = 400
-SURFACE_HEIGHT = 400
+# Initializing surface (400 x 400)
+SURFACE_WIDTH = NUM_COLS * 50
+SURFACE_HEIGHT = NUM_ROWS * 50
 
-CIRCLE_RAD = int((SURFACE_WIDTH/8)/2)
+CIRCLE_RAD = int((SURFACE_WIDTH/NUM_COLS)/2)
 game_over = False
+red_wins = False
+black_wins = False
+
 sprite_count = 0
 
-extra_space_for_score = 300
+extra_space_for_score = SURFACE_WIDTH * 6/8 # (300)
 
 surface = pygame.display.set_mode((SURFACE_WIDTH + extra_space_for_score, SURFACE_HEIGHT))
 
@@ -47,3 +52,16 @@ buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
 squares_list = pygame.sprite.Group()
 current_click_sprite_list = pygame.sprite.Group()
+
+red_pieces_coords = []
+black_pieces_coords = []
+brown_board_square_coords = []
+black_board_square_coords = []
+winning_board_square_silver_coords = []
+winning_board_square_gold_coords = []
+
+silver_top_occupied = None
+silver_bottom_occupied = None
+gold_top_occupied = None
+gold_bottom_occupied = None
+

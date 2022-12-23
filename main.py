@@ -11,6 +11,7 @@ from global_ import *
 from classes import Sprite
 from classes import BoardSquare
 from functions import draw_board
+from functions import find_strict_x_y
 
 # Initializing Pygame
 pygame.init()
@@ -126,13 +127,70 @@ def remove_captured_sprite(button):
             print("Removed sprite located at:", sprite_x, sprite_y)
             all_sprites_list.remove(inner_sprite)
 
+def check_silver_gold_squares():
+    # Note: register after landing (have to stay there for until opponent's turn finishes)
+    global silver_top_occupied
+    global silver_bottom_occupied
+    global gold_top_occupied
+    global gold_bottom_occupied
+    global game_over
+    global red_wins
+    global black_wins
+
+    # Check Silver and Gold squares
+    if surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD/2)))[:3] == RED:
+        silver_top_occupied = 'Red'
+        print("LANDED ON TOP LEFT SILVER RED")
+    if surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD/2)))[:3] == BLACK:
+        silver_top_occupied = 'Black'
+        print("LANDED ON TOP LEFT SILVER BLACK")
+    if surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD/2)))[:3] == RED:
+        silver_bottom_occupied = 'Red'
+        print("LANDED ON BOTTOM RIGHT SILVER RED")
+
+    if surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD/2)))[:3] == BLACK:
+        silver_bottom_occupied = 'Black'
+        print("LANDED ON BOTTOM RIGHT SILVER BLACK")
+    if surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD / 2),
+                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD / 2)))[:3] == RED:
+        gold_top_occupied = 'Red'
+    if surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD / 2),
+                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD / 2)))[:3] == BLACK:
+        gold_top_occupied = 'Black'
+    if surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD / 2),
+                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD / 2)))[:3] == RED:
+        gold_bottom_occupied = 'Red'
+    if surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD / 2),
+                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD / 2)))[:3] == BLACK:
+        gold_bottom_occupied = 'Black'
+
+    # Check winning connect (All 4 middle winning squares are occupied)
+    if silver_top_occupied == 'Red' and silver_bottom_occupied == 'Red' and gold_top_occupied == 'Red' and \
+            gold_bottom_occupied == 'Red':
+        game_over = True
+        red_wins = True
+
+    elif silver_top_occupied == 'Black' and silver_bottom_occupied == 'Black' and gold_top_occupied == 'Black' and \
+            gold_bottom_occupied == 'Black':
+        game_over = True
+        black_wins = True
+
 
 while not game_over:
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
             sys.exit()
+        elif game_over:
+            print("GAME OVER!")
+            if black_wins:
+                print("BLACK WINS!")
+            elif red_wins:
+                print("RED WINS!")
+            sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            check_silver_gold_squares()
+
             print("It is", get_current_player(player_state), "'s turn")
 
             x_position, y_position = pygame.mouse.get_pos()
@@ -296,8 +354,8 @@ while not game_over:
 
                 # Update the score and the turn
                 show_score_and_turn()
-
                 pygame.display.flip()
+
 
     # Update the board squares
     squares_list.update()
