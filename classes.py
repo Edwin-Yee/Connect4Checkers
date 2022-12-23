@@ -50,7 +50,6 @@ class Sprite(pygame.sprite.Sprite):
         index_y = (np.abs(list_y - y_location)).argmin()
 
         if sprite_color == RED:
-            # Check for opponent's color? (Implementing Capture)
             if surface.get_at((int(x_location), int(y_location))) == BLACK:
 
                 self.rect.x = list_x[index_x]
@@ -59,7 +58,6 @@ class Sprite(pygame.sprite.Sprite):
                 self.rect.x = list_x[index_x]
                 self.rect.y = list_y[index_y]
         elif sprite_color == BLACK:
-            # Check for opponent's color? (Implementing Capture)
             if surface.get_at((int(x_location), int(y_location))) == RED:
                 self.rect.x = list_x[index_x]
                 self.rect.y = list_y[index_y]
