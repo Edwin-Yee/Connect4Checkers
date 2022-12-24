@@ -21,6 +21,8 @@ class Sprite(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
+        self.level = 0
+
     def mouse_click_check(self, mouse_x, mouse_y):
         if self.rect.collidepoint(mouse_x, mouse_y):
             if self.color == RED:
@@ -65,6 +67,10 @@ class Sprite(pygame.sprite.Sprite):
                 self.rect.x = list_x[index_x]
                 self.rect.y = list_y[index_y]
 
+    def upgrade(self):
+        self.level += 1
+        print("SPRITE UPGRADED TO", self.level)
+
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, state, color, pos, size=(32, 16), image=None):
@@ -106,6 +112,35 @@ class BoardSquare(pygame.sprite.Sprite):
         self.color = square_color
 
         self.rect = self.image.get_rect()
+
+
+class ShopButton():
+    def __init__(self, x, y, image, scale):
+        width = image.get_width()
+        height = image.get_height()
+        self.image = pygame.transform.scale(image, (int(width*scale), int(height*scale)))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.clicked = False
+
+    def draw(self):
+        action = False
+
+        position = pygame.mouse.get_pos()
+
+        # Check if left mouse button (1) has been clicked over the button
+        if self.rect.collidepoint(position):
+            if pygame.mouse.get_pressed()[0] == 1 and not self.clicked:
+                self.clicked = True
+                action = True
+
+        # Release mouse button
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+
+        surface.blit(self.image, (self.rect.x, self.rect.y))
+
+        return action
 
 
 image = pygame.Surface((100, 40))

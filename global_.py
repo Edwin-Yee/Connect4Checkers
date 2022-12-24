@@ -47,6 +47,10 @@ sprite_count = 0
 extra_space_for_score = SURFACE_WIDTH * 6/8 # (300)
 
 surface = pygame.display.set_mode((SURFACE_WIDTH + extra_space_for_score, SURFACE_HEIGHT))
+pygame.display.set_caption('Connect4Checkers')
+
+# load in the shop button imgs
+upgrade_img = pygame.image.load('upgrade_img.png').convert_alpha()
 
 buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
@@ -65,3 +69,5 @@ silver_bottom_occupied = None
 gold_top_occupied = None
 gold_bottom_occupied = None
 
+red_upgrade_state = False
+black_upgrade_state = False
