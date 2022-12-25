@@ -6,13 +6,14 @@ import sys
 import neat
 import os
 
-from Connect4Chess import global_
+
 from global_ import *
 from classes import Sprite
 from classes import BoardSquare
 from classes import ShopButton
 from functions import draw_board
-from functions import find_strict_x_y
+# from functions import find_strict_x_y
+from player_functions import *
 
 # Initializing Pygame
 pygame.init()
@@ -21,37 +22,23 @@ pygame.init()
 draw_board()
 squares_list.update()
 squares_list.draw(surface)
-player_state = 0
 
-player_red_score = 0
-player_black_score = 0
-textX = surface.get_width() - 275
-red_textY = 100
-black_textY = 200
-turnY = 300
-print(pygame.font.get_fonts())
-font = pygame.font.Font("freesansbold.ttf", 24)
-smaller_font = pygame.font.Font("freesansbold.ttf", 18)
 
 upgrade_button_red = ShopButton(textX + 50, red_textY + 20, upgrade_img, 1)
 upgrade_button_black = ShopButton(textX + 50, black_textY + 20, upgrade_img, 1)
-
-
-def get_current_player(player_state_inner) -> str:
-    if player_state_inner % 2 == 0:
-        return 'Black'
-    else:
-        return 'Red'
+cancel_button = ShopButton(textX, black_textY + 100, cancel_img, 1)
+confirm_button = ShopButton(textX + 100, black_textY + 100, confirm_img, 1)
 
 
 def show_score_and_turn():
+
     score_red = font.render("Player Red Gold: " + str(player_red_score), True, (255, 255, 255))
     score_black = font.render("Player Black Gold: " + str(player_black_score), True, (255, 255, 255))
 
     # Draw a gray rectangle to cover up the previous score (not black because we are detecting for the black color
     # when showing the legal moves)
     pygame.draw.rect(surface, (50, 50, 50), pygame.Rect(surface.get_width() - extra_space_for_score, 0, 500, 500))
-    print(get_current_player(player_state))
+    print("player_functions.py:", get_current_player(player_state))
 
     if get_current_player(player_state) == 'Red':
         current_turn = smaller_font.render("Player with Red Pieces Turn", True, (255, 255, 255))
@@ -65,30 +52,6 @@ def show_score_and_turn():
 
 
 show_score_and_turn()
-
-
-def give_silver_gold_reward():
-    global player_red_score
-    global player_black_score
-
-    if silver_top_occupied == 'Red':
-        player_red_score += 1
-    if silver_bottom_occupied == 'Red':
-        player_red_score += 1
-    if gold_top_occupied == 'Red':
-        player_red_score += 2
-    if gold_bottom_occupied == 'Red':
-        player_red_score += 2
-
-    if silver_top_occupied == 'Black':
-        player_black_score += 1
-    if silver_bottom_occupied == 'Black':
-        player_black_score += 1
-    if gold_top_occupied == 'Black':
-        player_black_score += 2
-    if gold_bottom_occupied == 'Black':
-        player_black_score += 2
-
 
 pygame.display.flip()
 
@@ -107,19 +70,6 @@ def remove_buttons():
     for inner_button in buttons:
         inner_button.kill()
         pygame.display.flip()
-
-
-def increment_score(player_state_inner):
-    global player_red_score
-    global player_black_score
-
-    if player_state_inner % 2 == 0:
-        # Player black's turn
-        player_black_score += 1
-
-    else:
-        # Player red's turn
-        player_red_score += 1
 
 
 def remove_captured_sprite(button):
@@ -218,10 +168,27 @@ def check_silver_gold_squares():
 while not game_over:
 
     if upgrade_button_red.draw():
+        print("Red Upgrade: True")
         red_upgrade_state = True
 
     if upgrade_button_black.draw():
+        print("Black Upgrade: True")
         black_upgrade_state = True
+
+    if cancel_button.draw():
+        print("Cancelled")
+        red_upgrade_state = False
+        black_upgrade_state = False
+        is_confirmed = False
+
+    if confirm_button.draw():
+        print("Confirmed")
+        is_confirmed = True
+        confirmation_sprite.sprites()[0].upgrade()
+        red_upgrade_state = False
+        black_upgrade_state = False
+        confirmation_sprite.clear()
+        is_confirmed = False
 
     for event in pygame.event.get():
 
@@ -238,17 +205,33 @@ while not game_over:
             x_position, y_position = pygame.mouse.get_pos()
             mouse_clicked = pygame.mouse.get_pressed()[0]
 
-            if red_upgrade_state and get_current_player(player_state) == 'Red':
+            if red_upgrade_state and get_current_player(player_state) == 'Red' and not is_confirmed:
                 for sprite in all_sprites_list:
                     if sprite.mouse_click_check(x_position, y_position):
-                        sprite.upgrade()
-                        red_upgrade_state = False
+                        confirmation_sprite.add(sprite)
+                        print("Sprite selected for upgrade - RED")
+                        # sprite.upgrade()
+                        # red_upgrade_state = False
 
-            elif black_upgrade_state and get_current_player(player_state) == 'Black':
+            elif black_upgrade_state and get_current_player(player_state) == 'Black' and not is_confirmed:
                 for sprite in all_sprites_list:
                     if sprite.mouse_click_check(x_position, y_position):
-                        sprite.upgrade()
-                        black_upgrade_state = False
+                        confirmation_sprite.add(sprite)
+                        print("Sprite selected for upgrade - BLACK")
+                        # sprite.upgrade()
+                        # black_upgrade_state = False
+
+            # elif red_upgrade_state and get_current_player(player_state) == 'Red' and is_confirmed:
+            #     confirmation_sprite.sprites()[0].upgrade()
+            #     red_upgrade_state = False
+            #     confirmation_sprite.clear()
+            #     is_confirmed = False
+            #
+            # elif black_upgrade_state and get_current_player(player_state) == 'Black' and is_confirmed:
+            #     confirmation_sprite.sprites()[0].upgrade()
+            #     black_upgrade_state = False
+            #     confirmation_sprite.clear()
+            #     is_confirmed = False
 
             else:
                 check_silver_gold_squares()
@@ -290,10 +273,10 @@ while not game_over:
 
                             if button_1.get_state() == "Vertical Capture":
                                 print("WORKING CAPTURE VERTICAL")
-                                increment_score(player_state)
+                                player_black_score, player_red_score = player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
                                 remove_captured_sprite(button_1)
 
-                            give_silver_gold_reward()
+                            player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
 
                         elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
@@ -307,10 +290,10 @@ while not game_over:
 
                             if button_2.get_state() == "Left Diagonal Capture":
                                 print("WORKING CAPTURE LEFT DIAGONAL")
-                                increment_score(player_state)
+                                player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
                                 remove_captured_sprite(button_2)
 
-                            give_silver_gold_reward()
+                            player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
 
                         elif button_3.rect.collidepoint(x_position, y_position) and mouse_clicked:
@@ -324,10 +307,10 @@ while not game_over:
 
                             if button_3.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE RIGHT DIAGONAL")
-                                increment_score(player_state)
+                                player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
                                 remove_captured_sprite(button_3)
 
-                            give_silver_gold_reward()
+                            player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
 
                         elif not button_1.rect.collidepoint(x_position, y_position) \
@@ -356,10 +339,10 @@ while not game_over:
                             if button_1.get_state() == "Vertical Capture" or button_1.get_state() == "Left Diagonal Capture" \
                                     or button_1.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE 2 BUTTON")
-                                increment_score(player_state)
+                                player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
                                 remove_captured_sprite(button_1)
 
-                            give_silver_gold_reward()
+                            player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
 
                         elif button_2.rect.collidepoint(x_position, y_position) and mouse_clicked:
@@ -374,10 +357,10 @@ while not game_over:
                             if button_2.get_state() == "Vertical Capture" or button_2.get_state() == "Left Diagonal Capture" \
                                     or button_2.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE 2 BUTTON")
-                                increment_score(player_state)
+                                player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
                                 remove_captured_sprite(button_2)
 
-                            give_silver_gold_reward()
+                            player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
 
                         elif not button_1.rect.collidepoint(x_position, y_position) \
@@ -404,10 +387,10 @@ while not game_over:
                             if button_1.get_state() == "Vertical Capture" or button_1.get_state() == "Left Diagonal Capture" \
                                     or button_1.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE - 1 BUTTON SHOWN")
-                                increment_score(player_state)
+                                player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
                                 remove_captured_sprite(button_1)
 
-                            give_silver_gold_reward()
+                            player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
 
                         elif not button_1.rect.collidepoint(x_position, y_position) \
