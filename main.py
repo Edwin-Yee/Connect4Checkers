@@ -12,7 +12,7 @@ from classes import Sprite
 from classes import BoardSquare
 from classes import ShopButton
 from functions import draw_board
-# from functions import find_strict_x_y
+from functions import show_score_and_turn
 from player_functions import *
 
 # Initializing Pygame
@@ -23,35 +23,12 @@ draw_board()
 squares_list.update()
 squares_list.draw(surface)
 
-
 upgrade_button_red = ShopButton(textX + 50, red_textY + 20, upgrade_img, 1)
 upgrade_button_black = ShopButton(textX + 50, black_textY + 20, upgrade_img, 1)
 cancel_button = ShopButton(textX, black_textY + 100, cancel_img, 1)
 confirm_button = ShopButton(textX + 100, black_textY + 100, confirm_img, 1)
 
-
-def show_score_and_turn():
-
-    score_red = font.render("Player Red Gold: " + str(player_red_score), True, (255, 255, 255))
-    score_black = font.render("Player Black Gold: " + str(player_black_score), True, (255, 255, 255))
-
-    # Draw a gray rectangle to cover up the previous score (not black because we are detecting for the black color
-    # when showing the legal moves)
-    pygame.draw.rect(surface, (50, 50, 50), pygame.Rect(surface.get_width() - extra_space_for_score, 0, 500, 500))
-    print("player_functions.py:", get_current_player(player_state))
-
-    if get_current_player(player_state) == 'Red':
-        current_turn = smaller_font.render("Player with Red Pieces Turn", True, (255, 255, 255))
-        surface.blit(current_turn, (textX, turnY))
-    else:
-        current_turn = smaller_font.render("Player with Black Pieces Turn", True, (255, 255, 255))
-        surface.blit(current_turn, (textX, turnY))
-
-    surface.blit(score_red, (textX, red_textY))
-    surface.blit(score_black, (textX, black_textY))
-
-
-show_score_and_turn()
+show_score_and_turn(player_red_score, player_black_score, surface, player_state, smaller_font, textX, textY, red_textY, black_textY, extra_space_for_score)
 
 pygame.display.flip()
 
@@ -182,13 +159,31 @@ while not game_over:
         is_confirmed = False
 
     if confirm_button.draw():
-        print("Confirmed")
-        is_confirmed = True
-        confirmation_sprite.sprites()[0].upgrade()
-        red_upgrade_state = False
-        black_upgrade_state = False
-        confirmation_sprite.clear()
-        is_confirmed = False
+        if len(confirmation_sprite.sprites()) > 0:
+            if confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_color() == RED:
+                if player_red_score >= 3:
+                    print("Confirmed - RED upgrade")
+                    player_red_score -= 3
+                    confirmation_sprite.sprites()[0].upgrade()
+                    red_upgrade_state = False
+                    confirmation_sprite.empty()
+                else:
+                    print("RED - You do not have enough gold to purchase an upgrade!")
+            elif confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_color() == BLACK:
+                if player_black_score >= 3:
+                    print("Confirmed - BLACK upgrade")
+                    player_black_score -= 3
+                    confirmation_sprite.sprites()[0].upgrade()
+                    black_upgrade_state = False
+                    confirmation_sprite.empty()
+                else:
+                    print("BLACK - You do not have enough gold to purchase an upgrade!")
+
+            show_score_and_turn(player_red_score, player_black_score, surface, player_state, smaller_font, textX, textY,
+                                red_textY, black_textY, extra_space_for_score)
+
+        else:
+            print("There are no sprites selected for an upgrade")
 
     for event in pygame.event.get():
 
@@ -205,33 +200,17 @@ while not game_over:
             x_position, y_position = pygame.mouse.get_pos()
             mouse_clicked = pygame.mouse.get_pressed()[0]
 
-            if red_upgrade_state and get_current_player(player_state) == 'Red' and not is_confirmed:
+            if red_upgrade_state and get_current_player(player_state) == 'Red':
                 for sprite in all_sprites_list:
                     if sprite.mouse_click_check(x_position, y_position):
                         confirmation_sprite.add(sprite)
                         print("Sprite selected for upgrade - RED")
-                        # sprite.upgrade()
-                        # red_upgrade_state = False
 
-            elif black_upgrade_state and get_current_player(player_state) == 'Black' and not is_confirmed:
+            elif black_upgrade_state and get_current_player(player_state) == 'Black':
                 for sprite in all_sprites_list:
                     if sprite.mouse_click_check(x_position, y_position):
                         confirmation_sprite.add(sprite)
                         print("Sprite selected for upgrade - BLACK")
-                        # sprite.upgrade()
-                        # black_upgrade_state = False
-
-            # elif red_upgrade_state and get_current_player(player_state) == 'Red' and is_confirmed:
-            #     confirmation_sprite.sprites()[0].upgrade()
-            #     red_upgrade_state = False
-            #     confirmation_sprite.clear()
-            #     is_confirmed = False
-            #
-            # elif black_upgrade_state and get_current_player(player_state) == 'Black' and is_confirmed:
-            #     confirmation_sprite.sprites()[0].upgrade()
-            #     black_upgrade_state = False
-            #     confirmation_sprite.clear()
-            #     is_confirmed = False
 
             else:
                 check_silver_gold_squares()
@@ -404,7 +383,7 @@ while not game_over:
                     num_click = num_click + 1
 
                     # Update the score and the turn
-                    show_score_and_turn()
+                    show_score_and_turn(player_red_score, player_black_score, surface, player_state, smaller_font, textX, textY, red_textY, black_textY, extra_space_for_score)
                     pygame.display.flip()
 
 

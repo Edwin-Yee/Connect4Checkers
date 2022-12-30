@@ -71,6 +71,9 @@ class Sprite(pygame.sprite.Sprite):
         self.level += 1
         print("SPRITE UPGRADED TO", self.level)
 
+    def get_color(self):
+        return self.color
+
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, state, color, pos, size=(32, 16), image=None):

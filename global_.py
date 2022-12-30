@@ -53,7 +53,6 @@ pygame.display.set_caption('Connect4Checkers')
 upgrade_img = pygame.image.load('imgs/upgrade_img.png').convert_alpha()
 cancel_img = pygame.image.load('imgs/cancel_img.png').convert_alpha()
 confirm_img = pygame.image.load('imgs/confirm_img.png').convert_alpha()
-is_confirmed = False
 confirmation_sprite = pygame.sprite.Group()
 
 player_red_score = 0
@@ -63,9 +62,9 @@ player_state = 0
 textX = surface.get_width() - 275
 red_textY = 100
 black_textY = 200
-turnY = 300
+textY = 300
 pygame.init()
-font = pygame.font.Font("freesansbold.ttf", 24)
+
 smaller_font = pygame.font.Font("freesansbold.ttf", 18)
 
 buttons = pygame.sprite.Group()

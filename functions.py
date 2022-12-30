@@ -4,10 +4,10 @@ import random
 import math
 import sys
 from Connect4Chess import global_
-from global_ import *
 from classes import Sprite
 from classes import BoardSquare
-
+from player_functions import *
+from global_ import *
 
 def initialize_board():
     game_board = np.zeros((NUM_ROWS, NUM_COLS))
@@ -116,21 +116,3 @@ def draw_board():
     for m in winning_squares_gold:
         squares_list.add(winning_squares_gold[m])
 
-
-# def find_strict_x_y(x_location, y_location):
-#     strict_x_locations = [CIRCLE_RAD / 2, SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
-#                           2 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 3 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
-#                           4 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 5 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2,
-#                           6 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2, 7 * SURFACE_WIDTH / 8 + CIRCLE_RAD / 2]
-#     strict_y_locations = [CIRCLE_RAD / 2, SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
-#                           2 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 3 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
-#                           4 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 5 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2,
-#                           6 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2, 7 * SURFACE_HEIGHT / 8 + CIRCLE_RAD / 2]
-#
-#     list_x = np.asarray(strict_x_locations)
-#     index_x = (np.abs(list_x - x_location)).argmin()
-#
-#     list_y = np.asarray(strict_y_locations)
-#     index_y = (np.abs(list_y - y_location)).argmin()
-#
-#     return index_x, index_y
