@@ -14,6 +14,7 @@ class Sprite(pygame.sprite.Sprite):
         self.image = pygame.Surface([width, height])
         self.image.fill(sprite_color)
 
+        # Sprite color can only be red or black (secondary colors are not considered in self.color)
         self.color = sprite_color
 
         self.name = "Sprite " + str(global_.sprite_count)
@@ -21,15 +22,16 @@ class Sprite(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.level = 0
+        # Sprite level starts at level 1
+        self.level = 1
 
     def mouse_click_check(self, mouse_x, mouse_y):
         if self.rect.collidepoint(mouse_x, mouse_y):
             if self.color == RED:
-                provide_legal_moves(self.rect.x, self.rect.y, RED)
+                provide_legal_moves(self.rect.x, self.rect.y, self.level, RED)
                 return True
             elif self.color == BLACK:
-                provide_legal_moves(self.rect.x, self.rect.y, BLACK)
+                provide_legal_moves(self.rect.x, self.rect.y, self.level, BLACK)
                 return True
 
             return False
@@ -69,6 +71,31 @@ class Sprite(pygame.sprite.Sprite):
 
     def upgrade(self):
         self.level += 1
+        scale = 0.25
+
+        # Change the look of the sprite once it is upgraded
+        if self.level == 2 and self.get_color() == RED:
+            red_sprite_lvl_2_img = pygame.image.load('imgs/red_sprite_lvl_2.png').convert_alpha()
+            width = red_sprite_lvl_2_img.get_width()
+            height = red_sprite_lvl_2_img.get_height()
+            self.image = pygame.transform.scale(red_sprite_lvl_2_img, (int(width*scale), int(height*scale)))
+        elif self.level == 3 and self.get_color() == RED:
+            red_sprite_lvl_3_img = pygame.image.load('imgs/red_sprite_lvl_3.png').convert_alpha()
+            width = red_sprite_lvl_3_img.get_width()
+            height = red_sprite_lvl_3_img.get_height()
+            self.image = pygame.transform.scale(red_sprite_lvl_3_img, (int(width*scale), int(height*scale)))
+        elif self.level == 4 and self.get_color() == RED:
+            red_sprite_lvl_4_img = pygame.image.load('imgs/red_sprite_lvl_4.png').convert_alpha()
+            width = red_sprite_lvl_4_img.get_width()
+            height = red_sprite_lvl_4_img.get_height()
+            self.image = pygame.transform.scale(red_sprite_lvl_4_img, (int(width*scale), int(height*scale)))
+        elif self.level == 5 and self.get_color() == RED:
+            red_sprite_lvl_5_img = pygame.image.load('imgs/red_sprite_lvl_5.png').convert_alpha()
+            width = red_sprite_lvl_5_img.get_width()
+            height = red_sprite_lvl_5_img.get_height()
+            self.image = pygame.transform.scale(red_sprite_lvl_5_img, (int(width*scale), int(height*scale)))
+
+        # TO-DO add new look for black
         print("SPRITE UPGRADED TO", self.level)
 
     def get_color(self):
@@ -152,7 +179,7 @@ image.fill((255, 0, 0))
 
 # Legal moves are "jumping" over another piece in front of your piece. Pieces with no other pieces in
 # front will have no legal moves.
-def provide_legal_moves(x, y, color):
+def provide_legal_moves(x, y, level, color):
 
     print("Showing legal move: ", x, y, color)
     if color == BLACK:
@@ -160,17 +187,33 @@ def provide_legal_moves(x, y, color):
 
         # Bounds check (Check for out of bounds for top of the board)
         if y - 2 * CIRCLE_RAD > 0:
-            if surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == BLACK:
-                if int(y - 4 * CIRCLE_RAD >= 0):
+            piece_level_vertical = None
+            piece_color_vertical = None
+            piece_level_left_diagonal = None
+            piece_color_left_diagonal = None
+            piece_level_right_diagonal = None
+            piece_color_right_diagonal = None
+
+            for sprite in all_sprites_list:
+                if sprite.rect.x == x and sprite.rect.y == y - 2 * CIRCLE_RAD:
+                    piece_level_vertical = sprite.level
+                    piece_color_vertical = sprite.color
+                if sprite.rect.x == x - 2 * CIRCLE_RAD and sprite.rect.y == y - 2 * CIRCLE_RAD:
+                    piece_level_left_diagonal = sprite.level
+                    piece_color_left_diagonal = sprite.color
+                if sprite.rect.x == x + 2 * CIRCLE_RAD and sprite.rect.y == y - 2 * CIRCLE_RAD:
+                    piece_level_right_diagonal = sprite.level
+                    piece_color_right_diagonal = sprite.color
+
+            if int(y - 4 * CIRCLE_RAD >= 0):
+                if piece_color_vertical == BLACK:
                     if surface.get_at((int(x), int(y - 4 * CIRCLE_RAD))) != RED and \
                             surface.get_at((int(x), int(y - 4 * CIRCLE_RAD))) != BLACK:
 
                         # Jump over own piece
                         buttons.add(Button("Vertical Jump", GREEN, pos=(x, y - 4 * CIRCLE_RAD), image=image))
                         print("Black checker in front!")
-
-            elif surface.get_at((int(x), int(y - 2 * CIRCLE_RAD))) == RED:
-                if int(y - 4 * CIRCLE_RAD >= 0):
+                elif piece_color_vertical == RED and level >= piece_level_vertical:
                     if surface.get_at((int(x), int(y - 4 * CIRCLE_RAD))) != RED and \
                             surface.get_at((int(x), int(y - 4 * CIRCLE_RAD))) != BLACK:
 
@@ -179,7 +222,9 @@ def provide_legal_moves(x, y, color):
                         print("Red checker in front!")
 
             if int(x - 4 * CIRCLE_RAD) >= 0 and int(y - 4 * CIRCLE_RAD) >= 0:
-                if surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK and \
+                print("piece level: ", level, "vs", piece_level_left_diagonal, piece_color_left_diagonal)
+
+                if piece_color_left_diagonal == BLACK  and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != GRAY:
@@ -187,7 +232,8 @@ def provide_legal_moves(x, y, color):
                     # Jump over own piece
                     buttons.add(Button("Left Diagonal Jump", GREEN, pos=(x - 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
                     print("Black checker in left diagonal!")
-                elif surface.get_at((int(x - 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == RED and \
+
+                elif piece_color_left_diagonal == RED and level >= piece_level_left_diagonal and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != GRAY:
@@ -197,7 +243,8 @@ def provide_legal_moves(x, y, color):
                     print("Red checker in left diagonal!")
 
             if int(x + 4 * CIRCLE_RAD) < SURFACE_WIDTH and int(y - 4 * CIRCLE_RAD) >= 0:
-                if surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == BLACK and \
+
+                if piece_color_right_diagonal == BLACK and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != GRAY:
@@ -205,7 +252,7 @@ def provide_legal_moves(x, y, color):
                     # Jump over own piece
                     buttons.add(Button("Right Diagonal Jump", GREEN, pos=(x + 4 * CIRCLE_RAD, y - 4 * CIRCLE_RAD), image=image))
                     print("Black checker in right diagonal!")
-                elif surface.get_at((int(x + 2 * CIRCLE_RAD), int(y - 2 * CIRCLE_RAD))) == RED and \
+                elif piece_color_right_diagonal == RED and level >= piece_level_right_diagonal and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y - 4 * CIRCLE_RAD))) != GRAY:
@@ -219,14 +266,33 @@ def provide_legal_moves(x, y, color):
 
         # Bounds check (Check for out of bounds for bottom of the board)
         if int(y + 2 * CIRCLE_RAD < SURFACE_HEIGHT):
+
+            piece_level_vertical = None
+            piece_color_vertical = None
+            piece_level_left_diagonal = None
+            piece_color_left_diagonal = None
+            piece_level_right_diagonal = None
+            piece_color_right_diagonal = None
+
+            for sprite in all_sprites_list:
+                if sprite.rect.x == x and sprite.rect.y == y + 2 * CIRCLE_RAD:
+                    piece_level_vertical = sprite.level
+                    piece_color_vertical = sprite.color
+                if sprite.rect.x == x - 2 * CIRCLE_RAD and sprite.rect.y == y + 2 * CIRCLE_RAD:
+                    piece_level_left_diagonal = sprite.level
+                    piece_color_left_diagonal = sprite.color
+                if sprite.rect.x == x + 2 * CIRCLE_RAD and sprite.rect.y == y + 2 * CIRCLE_RAD:
+                    piece_level_right_diagonal = sprite.level
+                    piece_color_right_diagonal = sprite.color
+
             if int(y + 4 * CIRCLE_RAD < SURFACE_HEIGHT):
-                if surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == RED and \
+                if piece_color_vertical == RED and \
                         surface.get_at((int(x), int(y + 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x), int(y + 4 * CIRCLE_RAD))) != BLACK:
                     # Jump over own piece
                     buttons.add(Button("Vertical Jump", BLUE, pos=(x, y + 4 * CIRCLE_RAD), image=image))
                     print("Red checker in front!")
-                elif surface.get_at((int(x), int(y + 2 * CIRCLE_RAD))) == BLACK and \
+                elif piece_color_vertical == BLACK and level >= piece_level_vertical and \
                         surface.get_at((int(x), int(y + 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x), int(y + 4 * CIRCLE_RAD))) != BLACK:
                     # Capture opponent piece only possible if there is an "empty" landing square:
@@ -235,7 +301,7 @@ def provide_legal_moves(x, y, color):
                     print("Black checker in front!")
 
             if int(x - 4 * CIRCLE_RAD) >= 0 and int(y + 4 * CIRCLE_RAD) < SURFACE_HEIGHT:
-                if surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED and \
+                if piece_color_left_diagonal == RED and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != GRAY:
@@ -243,7 +309,7 @@ def provide_legal_moves(x, y, color):
                     # Jump over own piece
                     buttons.add(Button("Left Diagonal Jump", BLUE, pos=(x - 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
                     print("Red checker in left diagonal!")
-                elif surface.get_at((int(x - 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == BLACK and \
+                elif piece_color_left_diagonal == BLACK and level >= piece_level_left_diagonal and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x - 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != GRAY:
@@ -253,7 +319,7 @@ def provide_legal_moves(x, y, color):
                     print("Black checker in left diagonal!")
 
             if int(x + 4 * CIRCLE_RAD < SURFACE_WIDTH) and int(y + 4 * CIRCLE_RAD < SURFACE_HEIGHT):
-                if surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == RED and \
+                if piece_color_right_diagonal == RED and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != GRAY:
@@ -261,7 +327,7 @@ def provide_legal_moves(x, y, color):
                     # Jump over own piece
                     buttons.add(Button("Right Diagonal Jump", BLUE, pos=(x + 4 * CIRCLE_RAD, y + 4 * CIRCLE_RAD), image=image))
                     print("Red checker in right diagonal!")
-                elif surface.get_at((int(x + 2 * CIRCLE_RAD), int(y + 2 * CIRCLE_RAD))) == BLACK and \
+                elif piece_color_right_diagonal == BLACK and level >= piece_level_right_diagonal and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != RED and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != BLACK and \
                         surface.get_at((int(x + 4 * CIRCLE_RAD), int(y + 4 * CIRCLE_RAD))) != GRAY:
