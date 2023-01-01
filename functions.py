@@ -37,64 +37,50 @@ def draw_board():
             elif row == 3 and col == 4 or row == 4 and col == 3:
                 winning_board_square_gold_coords.append((row * SURFACE_WIDTH / NUM_COLS, col * SURFACE_HEIGHT / NUM_ROWS))
             elif num % 2 == 1:
-                brown_board_square_coords.append((row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8))
-                # pygame.draw.rect(surface, DARK_BROWN,
-                # pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
-                # SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
+                brown_board_square_coords.append((row * SURFACE_WIDTH / NUM_COLS, col * SURFACE_HEIGHT / NUM_ROWS))
             else:
-                black_board_square_coords.append((row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8))
-                # pygame.draw.rect(surface, PALE_COLOR,
-                # pygame.Rect(row * SURFACE_WIDTH / 8, col * SURFACE_HEIGHT / 8,
-                # SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8))
-
+                black_board_square_coords.append((row * SURFACE_WIDTH / NUM_COLS, col * SURFACE_HEIGHT / NUM_ROWS))
             if col == 0 or col == 1:
                 # Generate red piece coordinates for the sprite
-                red_pieces_coords.append((row * SURFACE_WIDTH / 8 + CIRCLE_RAD, col * SURFACE_HEIGHT / 8 + CIRCLE_RAD))
-
-                # pygame.draw.circle(surface, RED, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
-                #                                    col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
-
+                red_pieces_coords.append((row * SURFACE_WIDTH / NUM_COLS + CIRCLE_RAD, col * SURFACE_HEIGHT / NUM_ROWS + CIRCLE_RAD))
             if col == NUM_COLS-1 or col == NUM_COLS-2:
                 # Generate black piece coordinates for the sprite
-                black_pieces_coords.append((row * SURFACE_WIDTH / 8 + CIRCLE_RAD, col * SURFACE_HEIGHT / 8 + CIRCLE_RAD))
-
-                # pygame.draw.circle(surface, BLACK, (row * SURFACE_WIDTH / 8 + CIRCLE_RAD,
-                #                                     col * SURFACE_HEIGHT / 8 + CIRCLE_RAD), CIRCLE_RAD)
+                black_pieces_coords.append((row * SURFACE_WIDTH / NUM_COLS + CIRCLE_RAD, col * SURFACE_HEIGHT / NUM_ROWS + CIRCLE_RAD))
 
     # Create the sprites
     red_game_pieces = {}
     for count, coord in enumerate(red_pieces_coords):
-        red_game_pieces["red_piece%d" % count] = Sprite(RED, CIRCLE_RAD, CIRCLE_RAD)
-        red_game_pieces["red_piece%d" % count].rect.x = coord[0] - CIRCLE_RAD/2
-        red_game_pieces["red_piece%d" % count].rect.y = coord[1] - CIRCLE_RAD/2
+        red_game_pieces["red_piece%d" % count] = Sprite(RED, CIRCLE_RAD * 2, CIRCLE_RAD * 2)
+        red_game_pieces["red_piece%d" % count].rect.x = coord[0]
+        red_game_pieces["red_piece%d" % count].rect.y = coord[1]
 
     black_game_pieces = {}
     for count, coord in enumerate(black_pieces_coords):
-        black_game_pieces["black_piece%d" % count] = Sprite(BLACK, CIRCLE_RAD, CIRCLE_RAD)
-        black_game_pieces["black_piece%d" % count].rect.x = coord[0] - CIRCLE_RAD/2
-        black_game_pieces["black_piece%d" % count].rect.y = coord[1] - CIRCLE_RAD/2
+        black_game_pieces["black_piece%d" % count] = Sprite(BLACK, CIRCLE_RAD * 2, CIRCLE_RAD * 2)
+        black_game_pieces["black_piece%d" % count].rect.x = coord[0]
+        black_game_pieces["black_piece%d" % count].rect.y = coord[1]
 
     brown_squares = {}
     for count, coord in enumerate(brown_board_square_coords):
-        brown_squares["brown_square%d" % count] = BoardSquare(DARK_BROWN, SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8)
+        brown_squares["brown_square%d" % count] = BoardSquare(DARK_BROWN, SURFACE_WIDTH / NUM_COLS, SURFACE_HEIGHT / NUM_ROWS)
         brown_squares["brown_square%d" % count].rect.x = coord[0]
         brown_squares["brown_square%d" % count].rect.y = coord[1]
 
     black_squares = {}
     for count, coord in enumerate(black_board_square_coords):
-        black_squares["black_square%d" % count] = BoardSquare(PALE_COLOR, SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8)
+        black_squares["black_square%d" % count] = BoardSquare(PALE_COLOR, SURFACE_WIDTH / NUM_COLS, SURFACE_HEIGHT / NUM_ROWS)
         black_squares["black_square%d" % count].rect.x = coord[0]
         black_squares["black_square%d" % count].rect.y = coord[1]
 
     winning_squares_silver = {}
     for count, coord in enumerate(winning_board_square_silver_coords):
-        winning_squares_silver["winning_square_silver%d" % count] = BoardSquare(SILVER, SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8)
+        winning_squares_silver["winning_square_silver%d" % count] = BoardSquare(SILVER, SURFACE_WIDTH / NUM_COLS, SURFACE_HEIGHT / NUM_ROWS)
         winning_squares_silver["winning_square_silver%d" % count].rect.x = coord[0]
         winning_squares_silver["winning_square_silver%d" % count].rect.y = coord[1]
 
     winning_squares_gold = {}
     for count, coord in enumerate(winning_board_square_gold_coords):
-        winning_squares_gold["winning_square_gold%d" % count] = BoardSquare(GOLD, SURFACE_WIDTH / 8, SURFACE_HEIGHT / 8)
+        winning_squares_gold["winning_square_gold%d" % count] = BoardSquare(GOLD, SURFACE_WIDTH / NUM_COLS, SURFACE_HEIGHT / NUM_ROWS)
         winning_squares_gold["winning_square_gold%d" % count].rect.x = coord[0]
         winning_squares_gold["winning_square_gold%d" % count].rect.y = coord[1]
 

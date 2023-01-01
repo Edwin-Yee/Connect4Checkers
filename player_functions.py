@@ -1,5 +1,6 @@
 import pygame
-
+from global_ import font
+from global_ import smaller_font
 def get_current_player(player_state_inner) -> str:
     if player_state_inner % 2 == 0:
         return 'Black'
@@ -43,13 +44,13 @@ def give_silver_gold_reward(silver_top_occupied_inner, silver_bottom_occupied_in
 
 
 def show_score_and_turn(inner_player_red_score, inner_player_black_score, surface, player_state, smaller_font, textX, textY, red_textY, black_textY, extra_space_for_score):
-    font = pygame.font.Font("freesansbold.ttf", 24)
+    # font = pygame.font.Font("freesansbold.ttf", 24 * global_scalar)
     score_red = font.render("Player Red Gold: " + str(inner_player_red_score), True, (255, 255, 255))
     score_black = font.render("Player Black Gold: " + str(inner_player_black_score), True, (255, 255, 255))
 
     # Draw a gray rectangle to cover up the previous score (not black because we are detecting for the black color
     # when showing the legal moves)
-    pygame.draw.rect(surface, (50, 50, 50), pygame.Rect(surface.get_width() - extra_space_for_score, 0, 500, 500))
+    pygame.draw.rect(surface, (50, 50, 50), pygame.Rect(surface.get_width() - extra_space_for_score, 0, surface.get_width(), surface.get_height()))
     print("player_functions.py:", get_current_player(player_state))
 
     if get_current_player(player_state) == 'Red':

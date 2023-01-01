@@ -23,10 +23,10 @@ draw_board()
 squares_list.update()
 squares_list.draw(surface)
 
-upgrade_button_red = ShopButton(textX + 50, red_textY + 20, upgrade_img, 1)
-upgrade_button_black = ShopButton(textX + 50, black_textY + 20, upgrade_img, 1)
-cancel_button = ShopButton(textX, black_textY + 100, cancel_img, 1)
-confirm_button = ShopButton(textX + 100, black_textY + 100, confirm_img, 1)
+upgrade_button_red = ShopButton(textX, red_textY + score_red_text_height, upgrade_img, global_scalar)
+upgrade_button_black = ShopButton(textX, black_textY + score_black_text_height, upgrade_img, global_scalar)
+cancel_button = ShopButton(textX, textY + current_turn_text_red_height, cancel_img, global_scalar)
+confirm_button = ShopButton(textX + confirm_img.get_width() * global_scalar, textY + current_turn_text_black_height, confirm_img, global_scalar)
 
 show_score_and_turn(player_red_score, player_black_score, surface, player_state, smaller_font, textX, textY, red_textY, black_textY, extra_space_for_score)
 
@@ -58,23 +58,23 @@ def remove_captured_sprite(button):
     if get_current_player(player_state) == 'Red':  # Red on the top
         if button.get_state() == "Vertical Capture":
             sprite_x = button_x
-            sprite_y = button_y - 2 * CIRCLE_RAD
+            sprite_y = button_y - 2 * CIRCLE_RAD * 2
         elif button.get_state() == "Left Diagonal Capture":
-            sprite_x = button_x + 2 * CIRCLE_RAD
-            sprite_y = button_y - 2 * CIRCLE_RAD
+            sprite_x = button_x + 2 * CIRCLE_RAD * 2
+            sprite_y = button_y - 2 * CIRCLE_RAD * 2
         elif button.get_state() == "Right Diagonal Capture":
-            sprite_x = button_x - 2 * CIRCLE_RAD
-            sprite_y = button_y - 2 * CIRCLE_RAD
+            sprite_x = button_x - 2 * CIRCLE_RAD * 2
+            sprite_y = button_y - 2 * CIRCLE_RAD * 2
     elif get_current_player(player_state) == 'Black':  # Black on the bottom
         if button.get_state() == "Vertical Capture":
             sprite_x = button_x
-            sprite_y = button_y + 2 * CIRCLE_RAD
+            sprite_y = button_y + 2 * CIRCLE_RAD * 2
         elif button.get_state() == "Left Diagonal Capture":
-            sprite_x = button_x + 2 * CIRCLE_RAD
-            sprite_y = button_y + 2 * CIRCLE_RAD
+            sprite_x = button_x + 2 * CIRCLE_RAD * 2
+            sprite_y = button_y + 2 * CIRCLE_RAD * 2
         elif button.get_state() == "Right Diagonal Capture":
-            sprite_x = button_x - 2 * CIRCLE_RAD
-            sprite_y = button_y + 2 * CIRCLE_RAD
+            sprite_x = button_x - 2 * CIRCLE_RAD * 2
+            sprite_y = button_y + 2 * CIRCLE_RAD * 2
 
     for inner_sprite in all_sprites_list:
         # print(loop_sprite.rect.x, loop_sprite.rect.y, "vs", sprite_x, sprite_y)
@@ -94,38 +94,38 @@ def check_silver_gold_squares():
     global black_wins
 
     # Check Silver and Gold squares
-    if surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD/2)))[:3] == RED:
+    if surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD * 2/2)))[:3] == RED:
         silver_top_occupied = 'Red'
         print("LANDED ON TOP LEFT SILVER RED")
-    elif surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD/2)))[:3] == BLACK:
+    elif surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD * 2/2)))[:3] == BLACK:
         silver_top_occupied = 'Black'
         print("LANDED ON TOP LEFT SILVER BLACK")
     else:
         silver_top_occupied = None
 
-    if surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD/2)))[:3] == RED:
+    if surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD * 2/2)))[:3] == RED:
         silver_bottom_occupied = 'Red'
         print("LANDED ON BOTTOM RIGHT SILVER RED")
-    elif surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD/2)))[:3] == BLACK:
+    elif surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD * 2/2)))[:3] == BLACK:
         silver_bottom_occupied = 'Black'
         print("LANDED ON BOTTOM RIGHT SILVER BLACK")
     else:
         silver_bottom_occupied = None
 
-    if surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD / 2),
-                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD / 2)))[:3] == RED:
+    if surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD * 2 / 2)))[:3] == RED:
         gold_top_occupied = 'Red'
-    elif surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD / 2),
-                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD / 2)))[:3] == BLACK:
+    elif surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD * 2 / 2)))[:3] == BLACK:
         gold_top_occupied = 'Black'
     else:
         gold_top_occupied = None
 
-    if surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD / 2),
-                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD / 2)))[:3] == RED:
+    if surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD * 2 / 2)))[:3] == RED:
         gold_bottom_occupied = 'Red'
-    elif surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD / 2),
-                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD / 2)))[:3] == BLACK:
+    elif surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD * 2 / 2)))[:3] == BLACK:
         gold_bottom_occupied = 'Black'
     else:
         gold_bottom_occupied = None
@@ -161,23 +161,28 @@ while not game_over:
     if confirm_button.draw():
         if len(confirmation_sprite.sprites()) > 0:
             if confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_color() == RED:
-                if player_red_score >= 3:
+                if player_red_score >= 3 and confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_level() < 5:
                     print("Confirmed - RED upgrade")
                     player_red_score -= 3
-                    confirmation_sprite.sprites()[0].upgrade()
+                    confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].upgrade()
                     red_upgrade_state = False
                     confirmation_sprite.empty()
-                else:
+                elif player_red_score < 3 and confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_level() < 5:
                     print("RED - You do not have enough gold to purchase an upgrade!")
+                else:
+                    print("RED - Sprite is already at max level!")
+
             elif confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_color() == BLACK:
-                if player_black_score >= 3:
+                if player_black_score >= 3 and confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_level() < 5:
                     print("Confirmed - BLACK upgrade")
                     player_black_score -= 3
-                    confirmation_sprite.sprites()[0].upgrade()
+                    confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].upgrade()
                     black_upgrade_state = False
                     confirmation_sprite.empty()
-                else:
+                elif player_black_score < 3 and confirmation_sprite.sprites()[len(confirmation_sprite.sprites()) - 1].get_level() < 5:
                     print("BLACK - You do not have enough gold to purchase an upgrade!")
+                else:
+                    print("BLACK - Sprite is already at max level!")
 
             show_score_and_turn(player_red_score, player_black_score, surface, player_state, smaller_font, textX, textY,
                                 red_textY, black_textY, extra_space_for_score)

@@ -29,22 +29,25 @@ GRAY = (50, 50, 50)
 GOLD = (255, 223, 0)
 SILVER = (192, 192, 192)
 
-# Creating the board
+# Creating the board (Default: 8 rows, 8 columns)
 NUM_ROWS = 8
 NUM_COLS = 8
 
-# Initializing surface (400 x 400)
-SURFACE_WIDTH = NUM_COLS * 50
-SURFACE_HEIGHT = NUM_ROWS * 50
+# Initializing surface (Default: scalar = 1, 400 x 400 surface)
+global_scalar = 1.2
+SURFACE_WIDTH = NUM_COLS * 50 * global_scalar
+SURFACE_HEIGHT = NUM_ROWS * 50 * global_scalar
 
-CIRCLE_RAD = int((SURFACE_WIDTH/NUM_COLS)/2)
+# CIRCLE_RAD = (SURFACE_WIDTH/NUM_COLS) / 4 * global_scalar
+CIRCLE_RAD = 12.5 * global_scalar
+
 game_over = False
 red_wins = False
 black_wins = False
 
 sprite_count = 0
 
-extra_space_for_score = SURFACE_WIDTH * 6/8 # (300)
+extra_space_for_score = SURFACE_WIDTH * 7/8 # (300)
 
 surface = pygame.display.set_mode((SURFACE_WIDTH + extra_space_for_score, SURFACE_HEIGHT))
 pygame.display.set_caption('Connect4Checkers')
@@ -59,13 +62,20 @@ player_red_score = 0
 player_black_score = 0
 player_state = 0
 
-textX = surface.get_width() - 275
-red_textY = 100
-black_textY = 200
-textY = 300
 pygame.init()
 
-smaller_font = pygame.font.Font("freesansbold.ttf", 18)
+smaller_font = pygame.font.Font("freesansbold.ttf", int(18 * global_scalar))
+font = pygame.font.Font("freesansbold.ttf", int(24 * global_scalar))
+
+current_turn_text_red_width, current_turn_text_red_height = smaller_font.size("Player with Red Pieces Turn")
+current_turn_text_black_width, current_turn_text_black_height = smaller_font.size("Player with Black Pieces Turn")
+score_red_text_width, score_red_text_height = font.size("Player Red Score: x")
+score_black_text_width, score_black_text_height = font.size("Player Black Score: x")
+
+textX = surface.get_width() * 5/8
+red_textY = SURFACE_HEIGHT * 1/8
+black_textY = red_textY + score_black_text_height * global_scalar + upgrade_img.get_height()
+textY = red_textY + score_black_text_height * global_scalar + upgrade_img.get_height() + score_red_text_height * global_scalar + upgrade_img.get_height()
 
 buttons = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
