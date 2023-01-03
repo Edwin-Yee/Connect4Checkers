@@ -14,6 +14,8 @@ import sys
     # Python Pong AI Tutorial - Using NEAT, Tech With Tim, https://www.youtube.com/watch?v=2f6TmKm7yx0
     # Python Flappy Bird AI Tutorial (with NEAT) - NEAT Configuration and Explanation, Tech With Tim,
     # https://www.youtube.com/watch?v=MPFWsRjDmnU&t=747s
+# References (for checkers minimax algorithm):
+    # https://www.youtube.com/watch?v=mYbrH1Cl3nw
 
 # This file holds all the global variables
 # Defining colors

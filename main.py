@@ -11,8 +11,7 @@ from global_ import *
 from classes import Sprite
 from classes import BoardSquare
 from classes import ShopButton
-from functions import draw_board
-from functions import show_score_and_turn
+from functions import *
 from player_functions import *
 
 # Initializing Pygame
@@ -35,114 +34,20 @@ pygame.display.flip()
 num_click = 0
 isButtonPressed = False
 isSpriteClicked = False
-
+FPS = 60
+clock = pygame.time.Clock()
 
 # class ConnectGame:
 #     def __init__(self, window, width, height):
 #         self.game = Game(window, width, height)
 # TODO put game into separate class with initialization
 
-
-def remove_buttons():
-    for inner_button in buttons:
-        inner_button.kill()
-        pygame.display.flip()
-
-
-def remove_captured_sprite(button):
-    button_x = button.get_position()[0]
-    button_y = button.get_position()[1]
-    sprite_x = 0
-    sprite_y = 0
-
-    if get_current_player(player_state) == 'Red':  # Red on the top
-        if button.get_state() == "Vertical Capture":
-            sprite_x = button_x
-            sprite_y = button_y - 2 * CIRCLE_RAD * 2
-        elif button.get_state() == "Left Diagonal Capture":
-            sprite_x = button_x + 2 * CIRCLE_RAD * 2
-            sprite_y = button_y - 2 * CIRCLE_RAD * 2
-        elif button.get_state() == "Right Diagonal Capture":
-            sprite_x = button_x - 2 * CIRCLE_RAD * 2
-            sprite_y = button_y - 2 * CIRCLE_RAD * 2
-    elif get_current_player(player_state) == 'Black':  # Black on the bottom
-        if button.get_state() == "Vertical Capture":
-            sprite_x = button_x
-            sprite_y = button_y + 2 * CIRCLE_RAD * 2
-        elif button.get_state() == "Left Diagonal Capture":
-            sprite_x = button_x + 2 * CIRCLE_RAD * 2
-            sprite_y = button_y + 2 * CIRCLE_RAD * 2
-        elif button.get_state() == "Right Diagonal Capture":
-            sprite_x = button_x - 2 * CIRCLE_RAD * 2
-            sprite_y = button_y + 2 * CIRCLE_RAD * 2
-
-    for inner_sprite in all_sprites_list:
-        # print(loop_sprite.rect.x, loop_sprite.rect.y, "vs", sprite_x, sprite_y)
-        if inner_sprite.rect.x == sprite_x and inner_sprite.rect.y == sprite_y:
-            print("Removed sprite located at:", sprite_x, sprite_y)
-            all_sprites_list.remove(inner_sprite)
-
-
-def check_silver_gold_squares():
-    # Note: register after landing (have to stay there for until opponent's turn finishes)
-    global silver_top_occupied
-    global silver_bottom_occupied
-    global gold_top_occupied
-    global gold_bottom_occupied
-    global game_over
-    global red_wins
-    global black_wins
-
-    # Check Silver and Gold squares
-    if surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD * 2/2)))[:3] == RED:
-        silver_top_occupied = 'Red'
-        print("LANDED ON TOP LEFT SILVER RED")
-    elif surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD * 2/2)))[:3] == BLACK:
-        silver_top_occupied = 'Black'
-        print("LANDED ON TOP LEFT SILVER BLACK")
-    else:
-        silver_top_occupied = None
-
-    if surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD * 2/2)))[:3] == RED:
-        silver_bottom_occupied = 'Red'
-        print("LANDED ON BOTTOM RIGHT SILVER RED")
-    elif surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD * 2/2)))[:3] == BLACK:
-        silver_bottom_occupied = 'Black'
-        print("LANDED ON BOTTOM RIGHT SILVER BLACK")
-    else:
-        silver_bottom_occupied = None
-
-    if surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD * 2 / 2),
-                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD * 2 / 2)))[:3] == RED:
-        gold_top_occupied = 'Red'
-    elif surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD * 2 / 2),
-                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD * 2 / 2)))[:3] == BLACK:
-        gold_top_occupied = 'Black'
-    else:
-        gold_top_occupied = None
-
-    if surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD * 2 / 2),
-                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD * 2 / 2)))[:3] == RED:
-        gold_bottom_occupied = 'Red'
-    elif surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD * 2 / 2),
-                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD * 2 / 2)))[:3] == BLACK:
-        gold_bottom_occupied = 'Black'
-    else:
-        gold_bottom_occupied = None
-
-    # Check winning connect (All 4 middle winning squares are occupied)
-    if silver_top_occupied == 'Red' and silver_bottom_occupied == 'Red' and gold_top_occupied == 'Red' and \
-            gold_bottom_occupied == 'Red':
-        game_over = True
-        red_wins = True
-
-    elif silver_top_occupied == 'Black' and silver_bottom_occupied == 'Black' and gold_top_occupied == 'Black' and \
-            gold_bottom_occupied == 'Black':
-        game_over = True
-        black_wins = True
-
-
 while not game_over:
+    clock.tick(FPS)
+
+    # if player_state == RED:
+    #     value, new_board = minimax(game.get_board(), 1, RED, game)
+    #     game.ai_move(new_board)
 
     if upgrade_button_red.draw():
         print("Red Upgrade: True")
@@ -218,7 +123,10 @@ while not game_over:
                         print("Sprite selected for upgrade - BLACK")
 
             else:
-                check_silver_gold_squares()
+                silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, game_over, \
+                red_wins, black_wins = check_silver_gold_squares(silver_top_occupied, silver_bottom_occupied,
+                                                                 gold_top_occupied, gold_bottom_occupied, game_over,
+                                                                 red_wins, black_wins)
 
                 print("It is", get_current_player(player_state), "'s turn")
 
@@ -258,7 +166,7 @@ while not game_over:
                             if button_1.get_state() == "Vertical Capture":
                                 print("WORKING CAPTURE VERTICAL")
                                 player_black_score, player_red_score = player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
-                                remove_captured_sprite(button_1)
+                                all_sprites_list = remove_captured_sprite(button_1, all_sprites_list, player_state)
 
                             player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
@@ -275,7 +183,7 @@ while not game_over:
                             if button_2.get_state() == "Left Diagonal Capture":
                                 print("WORKING CAPTURE LEFT DIAGONAL")
                                 player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
-                                remove_captured_sprite(button_2)
+                                all_sprites_list = remove_captured_sprite(button_2, all_sprites_list, player_state)
 
                             player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
@@ -292,7 +200,7 @@ while not game_over:
                             if button_3.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE RIGHT DIAGONAL")
                                 player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
-                                remove_captured_sprite(button_3)
+                                all_sprites_list = remove_captured_sprite(button_3, all_sprites_list, player_state)
 
                             player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
@@ -324,7 +232,7 @@ while not game_over:
                                     or button_1.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE 2 BUTTON")
                                 player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
-                                remove_captured_sprite(button_1)
+                                all_sprites_list = remove_captured_sprite(button_1, all_sprites_list, player_state)
 
                             player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
@@ -342,7 +250,7 @@ while not game_over:
                                     or button_2.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE 2 BUTTON")
                                 player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
-                                remove_captured_sprite(button_2)
+                                all_sprites_list = remove_captured_sprite(button_2, all_sprites_list, player_state)
 
                             player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1
@@ -372,7 +280,7 @@ while not game_over:
                                     or button_1.get_state() == "Right Diagonal Capture":
                                 print("WORKING CAPTURE - 1 BUTTON SHOWN")
                                 player_black_score, player_red_score = increment_score(player_state, player_black_score, player_red_score)
-                                remove_captured_sprite(button_1)
+                                all_sprites_list = remove_captured_sprite(button_1, all_sprites_list, player_state)
 
                             player_black_score, player_red_score = give_silver_gold_reward(silver_top_occupied, silver_bottom_occupied, gold_top_occupied, gold_bottom_occupied, player_red_score, player_black_score)
                             player_state += 1

@@ -9,6 +9,7 @@ from classes import BoardSquare
 from player_functions import *
 from global_ import *
 
+
 def initialize_board():
     game_board = np.zeros((NUM_ROWS, NUM_COLS))
     return game_board
@@ -101,4 +102,102 @@ def draw_board():
 
     for m in winning_squares_gold:
         squares_list.add(winning_squares_gold[m])
+
+
+def remove_buttons():
+    for inner_button in buttons:
+        inner_button.kill()
+        pygame.display.flip()
+
+
+def remove_captured_sprite(button, inner_all_sprites_list, inner_player_state):
+    button_x = button.get_position()[0]
+    button_y = button.get_position()[1]
+    sprite_x = 0
+    sprite_y = 0
+
+    if get_current_player(inner_player_state) == 'Red':  # Red on the top
+        if button.get_state() == "Vertical Capture":
+            sprite_x = button_x
+            sprite_y = button_y - 4 * CIRCLE_RAD 
+        elif button.get_state() == "Left Diagonal Capture":
+            sprite_x = button_x + 4 * CIRCLE_RAD
+            sprite_y = button_y - 4 * CIRCLE_RAD
+        elif button.get_state() == "Right Diagonal Capture":
+            sprite_x = button_x - 4 * CIRCLE_RAD
+            sprite_y = button_y - 4 * CIRCLE_RAD
+    elif get_current_player(inner_player_state) == 'Black':  # Black on the bottom
+        if button.get_state() == "Vertical Capture":
+            sprite_x = button_x
+            sprite_y = button_y + 4 * CIRCLE_RAD
+        elif button.get_state() == "Left Diagonal Capture":
+            sprite_x = button_x + 4 * CIRCLE_RAD
+            sprite_y = button_y + 4 * CIRCLE_RAD
+        elif button.get_state() == "Right Diagonal Capture":
+            sprite_x = button_x - 4 * CIRCLE_RAD
+            sprite_y = button_y + 4 * CIRCLE_RAD
+
+    for inner_sprite in inner_all_sprites_list:
+        # print(inner_sprite.rect.x, inner_sprite.rect.y, sprite_x, sprite_y)
+        if inner_sprite.rect.x == sprite_x and inner_sprite.rect.y == sprite_y:
+            print(get_current_player(inner_player_state), "Removed sprite located at:", sprite_x, sprite_y)
+            inner_all_sprites_list.remove(inner_sprite)
+
+    return inner_all_sprites_list
+
+
+def check_silver_gold_squares(silver_top_occupied_inner, silver_bottom_occupied_inner, gold_top_occupied_inner,
+                              gold_bottom_occupied_inner, game_over_inner, red_wins_inner, black_wins_inner):
+    # Note: register after landing (have to stay there for until opponent's turn finishes)
+
+    # Check Silver and Gold squares
+    if surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD * 2/2)))[:3] == RED:
+        silver_top_occupied_inner = 'Red'
+        print("LANDED ON TOP LEFT SILVER RED")
+    elif surface.get_at((int(winning_board_square_silver_coords[0][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[0][1] + CIRCLE_RAD * 2/2)))[:3] == BLACK:
+        silver_top_occupied_inner = 'Black'
+        print("LANDED ON TOP LEFT SILVER BLACK")
+    else:
+        silver_top_occupied_inner = None
+
+    if surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD * 2/2)))[:3] == RED:
+        silver_bottom_occupied_inner = 'Red'
+        print("LANDED ON BOTTOM RIGHT SILVER RED")
+    elif surface.get_at((int(winning_board_square_silver_coords[1][0] + CIRCLE_RAD * 2/2), int(winning_board_square_silver_coords[1][1] + CIRCLE_RAD * 2/2)))[:3] == BLACK:
+        silver_bottom_occupied_inner = 'Black'
+        print("LANDED ON BOTTOM RIGHT SILVER BLACK")
+    else:
+        silver_bottom_occupied_inner = None
+
+    if surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD * 2 / 2)))[:3] == RED:
+        gold_top_occupied_inner = 'Red'
+    elif surface.get_at((int(winning_board_square_gold_coords[0][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[0][1] + CIRCLE_RAD * 2 / 2)))[:3] == BLACK:
+        gold_top_occupied_inner = 'Black'
+    else:
+        gold_top_occupied_inner = None
+
+    if surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD * 2 / 2)))[:3] == RED:
+        gold_bottom_occupied_inner = 'Red'
+    elif surface.get_at((int(winning_board_square_gold_coords[1][0] + CIRCLE_RAD * 2 / 2),
+                       int(winning_board_square_gold_coords[1][1] + CIRCLE_RAD * 2 / 2)))[:3] == BLACK:
+        gold_bottom_occupied_inner = 'Black'
+    else:
+        gold_bottom_occupied_inner = None
+
+    # Check winning connect (All 4 middle winning squares are occupied)
+    if silver_top_occupied == 'Red' and silver_bottom_occupied == 'Red' and gold_top_occupied == 'Red' and \
+            gold_bottom_occupied == 'Red':
+        game_over_inner = True
+        red_wins_inner = True
+
+    elif silver_top_occupied == 'Black' and silver_bottom_occupied == 'Black' and gold_top_occupied == 'Black' and \
+            gold_bottom_occupied == 'Black':
+        game_over_inner = True
+        black_wins_inner = True
+
+    return silver_top_occupied_inner, silver_bottom_occupied_inner, gold_top_occupied_inner, \
+           gold_bottom_occupied_inner, game_over_inner, red_wins_inner, black_wins_inner
 
