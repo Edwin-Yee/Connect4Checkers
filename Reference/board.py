@@ -3,6 +3,7 @@ from global_ import NUM_ROWS, NUM_COLS, RED, BLACK, DARK_BROWN, PALE_COLOR, CIRC
     winning_board_square_gold_coords, winning_board_square_silver_coords, brown_board_square_coords, \
     black_board_square_coords, red_pieces_coords, black_pieces_coords, all_sprites_list, squares_list, SILVER, GOLD
 from classes import Sprite, BoardSquare
+from piece import Piece
 
 # code adapted from https://github.com/techwithtim/Python-Checkers-AI/blob/master/checkers/board.py
 
@@ -113,7 +114,7 @@ class Board:
         self.red_lvl_3 = self.black_lvl_3 = 0
         self.red_lvl_4 = self.black_lvl_4 = 0
         self.red_lvl_5 = self.black_lvl_5 = 0
-        self.draw_board()
+        self.create_board()
 
     def evaluate_position(self):
         return self.red_remaining - self.black_remaining + 2 * (self.red_lvl_2 - self.black_lvl_2) + 3 * \
@@ -136,12 +137,12 @@ class Board:
         piece.move(row, col)
 
     def create_board(self):
-        for row in range(ROWS):
+        for row in range(NUM_ROWS):
             self.board.append([])
-            for col in range(COLS):
+            for col in range(NUM_COLS):
                 if col % 2 == ((row + 1) % 2):
                     if row < 3:
-                        self.board[row].append(Piece(row, col, WHITE))
+                        self.board[row].append(Piece(row, col, BLACK))
                     elif row > 4:
                         self.board[row].append(Piece(row, col, RED))
                     else:
@@ -168,7 +169,7 @@ class Board:
 
     def winner(self):
         if self.red_left <= 0:
-            return WHITE
+            return BLACK
         elif self.white_left <= 0:
             return RED
 
@@ -183,9 +184,9 @@ class Board:
         if piece.color == RED or piece.king:
             moves.update(self._traverse_left(row - 1, max(row - 3, -1), -1, piece.color, left))
             moves.update(self._traverse_right(row - 1, max(row - 3, -1), -1, piece.color, right))
-        if piece.color == WHITE or piece.king:
-            moves.update(self._traverse_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
-            moves.update(self._traverse_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+        if piece.color == BLACK or piece.king:
+            moves.update(self._traverse_left(row + 1, min(row + 3, NUM_ROWS), 1, piece.color, left))
+            moves.update(self._traverse_right(row + 1, min(row + 3, NUM_ROWS), 1, piece.color, right))
 
         return moves
 
@@ -209,7 +210,7 @@ class Board:
                     if step == -1:
                         row = max(r - 3, 0)
                     else:
-                        row = min(r + 3, ROWS)
+                        row = min(r + 3, NUM_ROWS)
                     moves.update(self._traverse_left(r + step, row, step, color, left - 1, skipped=last))
                     moves.update(self._traverse_right(r + step, row, step, color, left + 1, skipped=last))
                 break
@@ -226,7 +227,7 @@ class Board:
         moves = {}
         last = []
         for r in range(start, stop, step):
-            if right >= COLS:
+            if right >= NUM_COLS:
                 break
 
             current = self.board[r][right]
@@ -242,7 +243,7 @@ class Board:
                     if step == -1:
                         row = max(r - 3, 0)
                     else:
-                        row = min(r + 3, ROWS)
+                        row = min(r + 3, NUM_ROWS)
                     moves.update(self._traverse_left(r + step, row, step, color, right - 1, skipped=last))
                     moves.update(self._traverse_right(r + step, row, step, color, right + 1, skipped=last))
                 break

@@ -1,18 +1,8 @@
-import numpy as np
-import pygame
-import random
-import math
-import sys
-import neat
-import os
-
-
-from global_ import *
-from classes import Sprite
-from classes import BoardSquare
 from classes import ShopButton
+from classes import get_ai_moves
 from functions import *
 from player_functions import *
+from game_board import Board
 
 # Initializing Pygame
 pygame.init()
@@ -107,9 +97,18 @@ while not game_over:
                     # value, new_board = minimax(game.get_board(), 1, RED, game)
                     # game.ai_move(new_board)
                     print("It is the computer's turn to move")
+                    all_possible_ai_moves = []
+
                     for sprite in all_sprites_list:
-                        if sprite.get_color() == RED:
-                            print(sprite.rect.x, sprite.rect.y)
+                        # Check if the sprite is red and that the move list is not empty
+                        if sprite.get_color() == RED and get_ai_moves(sprite.rect.x, sprite.rect.y, sprite.get_level()):
+                            # print("Possible move:", get_ai_moves(sprite.rect.x, sprite.rect.y, sprite.get_level()))
+                            all_possible_ai_moves.append(get_ai_moves(sprite.rect.x, sprite.rect.y, sprite.get_level()))
+
+                    board = Board(all_sprites_list, all_possible_ai_moves)
+
+                    # TO-DO create a board object giving the locations of all the sprites
+                    # print(minimax(all_possible_ai_moves, board))
 
                 else:
                     print("It is the player's turn to move")

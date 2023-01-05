@@ -361,7 +361,7 @@ def get_ai_moves(x, y, level) -> list:
     ai_moves = []
 
     # The AI will always play as the red color
-    print("Showing moves for AI. Given parameters: ", x, y, level)
+    # print("Showing moves for AI. Given parameters: ", x, y, level)
 
     # The Red pieces start on the top and move downwards (positive y direction)
 

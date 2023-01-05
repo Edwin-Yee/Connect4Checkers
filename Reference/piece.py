@@ -1,4 +1,6 @@
 # Code adapted from https://github.com/techwithtim/Python-Checkers-AI/blob/master/checkers/piece.py
+from global_ import SQUARE_SIZE, GRAY, lvl_2_red_img
+import pygame
 
 class Piece:
     PADDING = 15
@@ -22,10 +24,10 @@ class Piece:
 
     def draw(self, win):
         radius = SQUARE_SIZE // 2 - self.PADDING
-        pygame.draw.circle(win, GREY, (self.x, self.y), radius + self.OUTLINE)
+        pygame.draw.circle(win, GRAY, (self.x, self.y), radius + self.OUTLINE)
         pygame.draw.circle(win, self.color, (self.x, self.y), radius)
         if self.king:
-            win.blit(CROWN, (self.x - CROWN.get_width() // 2, self.y - CROWN.get_height() // 2))
+            win.blit(lvl_2_red_img, (self.x - lvl_2_red_img.get_width() // 2, self.y - lvl_2_red_img.get_height() // 2))
 
     def move(self, row, col):
         self.row = row

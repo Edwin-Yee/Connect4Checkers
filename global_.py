@@ -42,6 +42,7 @@ SURFACE_HEIGHT = NUM_ROWS * 50 * global_scalar
 
 # CIRCLE_RAD = (SURFACE_WIDTH/NUM_COLS) / 4 * global_scalar
 CIRCLE_RAD = 12.5 * global_scalar
+SQUARE_SIZE = 4 * CIRCLE_RAD
 
 game_over = False
 red_wins = False
@@ -59,6 +60,8 @@ upgrade_img = pygame.image.load('imgs/upgrade_img.png').convert_alpha()
 cancel_img = pygame.image.load('imgs/cancel_img.png').convert_alpha()
 confirm_img = pygame.image.load('imgs/confirm_img.png').convert_alpha()
 confirmation_sprite = pygame.sprite.Group()
+
+lvl_2_red_img = pygame.transform.scale(pygame.image.load('imgs/red_sprite_lvl_2.png'), (44, 25))
 
 player_red_score = 0
 player_black_score = 0
