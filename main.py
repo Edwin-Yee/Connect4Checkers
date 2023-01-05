@@ -45,10 +45,6 @@ clock = pygame.time.Clock()
 while not game_over:
     clock.tick(FPS)
 
-    # if player_state == RED:
-    #     value, new_board = minimax(game.get_board(), 1, RED, game)
-    #     game.ai_move(new_board)
-
     if upgrade_button_red.draw():
         print("Red Upgrade: True")
         red_upgrade_state = True
@@ -96,7 +92,6 @@ while not game_over:
             print("There are no sprites selected for an upgrade")
 
     for event in pygame.event.get():
-
         if event.type == pygame.QUIT:
             sys.exit()
         elif game_over:
@@ -106,6 +101,19 @@ while not game_over:
             elif red_wins:
                 print("RED WINS!")
             sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                if get_current_player(player_state) == 'Red':
+                    # value, new_board = minimax(game.get_board(), 1, RED, game)
+                    # game.ai_move(new_board)
+                    print("It is the computer's turn to move")
+                    for sprite in all_sprites_list:
+                        if sprite.get_color() == RED:
+                            print(sprite.rect.x, sprite.rect.y)
+
+                else:
+                    print("It is the player's turn to move")
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x_position, y_position = pygame.mouse.get_pos()
             mouse_clicked = pygame.mouse.get_pressed()[0]
@@ -313,6 +321,28 @@ while not game_over:
     pygame.display.update()
 
     pygame.display.flip()
+
+
+# clock.tick(FPS)
+#
+# if game.turn == WHITE:
+#     value, new_board = minimax(game.get_board(), 4, WHITE, game)
+#     game.ai_move(new_board)
+#
+# if game.winner() != None:
+#     print(game.winner())
+#     run = False
+#
+# for event in pygame.event.get():
+#     if event.type == pygame.QUIT:
+#         run = False
+#
+#     if event.type == pygame.MOUSEBUTTONDOWN:
+#         pos = pygame.mouse.get_pos()
+#         row, col = get_row_col_from_mouse(pos)
+#         game.select(row, col)
+#
+# game.update()
 
 
 

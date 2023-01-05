@@ -10,9 +10,9 @@ def minimax(position, depth, maximize_player, game):
     # maximize_player is boolean val telling if we want to maximize the value or minimizing the value
     # game is the game object from the main.py
 
-    if depth == 0 or position.winner() is not None:
+    if depth == 0 or position.get_winner() is not None:
         # if we have reached the last node of the tree or if we have a winner in the given position \
-        return position.evaluate(), position
+        return position.evaluate_position(), position
 
     if maximize_player:
         max_eval = float('-inf')

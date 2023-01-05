@@ -6,7 +6,6 @@ import sys
 from Connect4Chess import global_
 from global_ import *
 
-
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, sprite_color, width, height):
         super(Sprite, self).__init__()
@@ -199,7 +198,6 @@ class ShopButton():
 image = pygame.Surface((100, 40))
 image.fill((255, 0, 0))
 
-
 # Legal moves are "jumping" over another piece in front of your piece. Pieces with no other pieces in
 # front will have no legal moves.
 def provide_legal_moves(x, y, level, color):
@@ -358,4 +356,91 @@ def provide_legal_moves(x, y, level, color):
                     # Capture opponent piece only possible if there is an "empty" landing square
                     buttons.add(Button("Right Diagonal Capture", BLUE, pos=(x + 4 * CIRCLE_RAD * 2, y + 4 * CIRCLE_RAD * 2), image=image))
                     print("Black checker in right diagonal!")
+
+def get_ai_moves(x, y, level) -> list:
+    ai_moves = []
+
+    # The AI will always play as the red color
+    print("Showing moves for AI. Given parameters: ", x, y, level)
+
+    # The Red pieces start on the top and move downwards (positive y direction)
+
+    # Bounds check (Check for out of bounds for bottom of the board)
+    if int(y + 2 * CIRCLE_RAD * 2 < SURFACE_HEIGHT):
+
+        piece_level_vertical = None
+        piece_color_vertical = None
+        piece_level_left_diagonal = None
+        piece_color_left_diagonal = None
+        piece_level_right_diagonal = None
+        piece_color_right_diagonal = None
+
+        for sprite in all_sprites_list:
+            if sprite.rect.x == x and sprite.rect.y == y + 2 * CIRCLE_RAD * 2:
+                piece_level_vertical = sprite.level
+                piece_color_vertical = sprite.color
+            if sprite.rect.x == x - 2 * CIRCLE_RAD * 2 and sprite.rect.y == y + 2 * CIRCLE_RAD * 2:
+                piece_level_left_diagonal = sprite.level
+                piece_color_left_diagonal = sprite.color
+            if sprite.rect.x == x + 2 * CIRCLE_RAD * 2 and sprite.rect.y == y + 2 * CIRCLE_RAD * 2:
+                piece_level_right_diagonal = sprite.level
+                piece_color_right_diagonal = sprite.color
+
+        if int(y + 4 * CIRCLE_RAD * 2 < SURFACE_HEIGHT):
+            if piece_color_vertical == RED and \
+                    surface.get_at((int(x), int(y + 4 * CIRCLE_RAD * 2))) != RED and \
+                    surface.get_at((int(x), int(y + 4 * CIRCLE_RAD * 2))) != BLACK:
+                # Jump over own piece
+                ai_moves.append(("Vertical Jump", x, y + 8 * CIRCLE_RAD))
+                # print("AI - Red checker in front!")
+
+            elif piece_color_vertical == BLACK and level >= piece_level_vertical and \
+                    surface.get_at((int(x), int(y + 4 * CIRCLE_RAD * 2))) != RED and \
+                    surface.get_at((int(x), int(y + 4 * CIRCLE_RAD * 2))) != BLACK:
+                # Capture opponent piece only possible if there is an "empty" landing square:
+                ai_moves.append(("Vertical Capture", x, y + 8 * CIRCLE_RAD))
+                # print("AI - Black checker in front!")
+
+        if int(x - 4 * CIRCLE_RAD * 2) >= 0 and int(y + 4 * CIRCLE_RAD * 2) < SURFACE_HEIGHT:
+            if piece_color_left_diagonal == RED and \
+                    surface.get_at((int(x - 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != RED and \
+                    surface.get_at((int(x - 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != BLACK and \
+                    surface.get_at((int(x - 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != GRAY:
+
+                # Jump over own piece
+                ai_moves.append(("Left Diagonal Jump", x - 8 * CIRCLE_RAD, y + 8 * CIRCLE_RAD))
+                # print("AI - Red checker in left diagonal!")
+
+            elif piece_color_left_diagonal == BLACK and level >= piece_level_left_diagonal and \
+                    surface.get_at((int(x - 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != RED and \
+                    surface.get_at((int(x - 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != BLACK and \
+                    surface.get_at((int(x - 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != GRAY:
+
+                # Capture opponent piece only possible if there is an "empty" landing square
+                ai_moves.append(("Left Diagonal Capture", x - 8 * CIRCLE_RAD, y + 8 * CIRCLE_RAD))
+                # print("AI - Black checker in left diagonal!")
+
+        if int(x + 4 * CIRCLE_RAD * 2 < SURFACE_WIDTH) and int(y + 4 * CIRCLE_RAD * 2 < SURFACE_HEIGHT):
+            if piece_color_right_diagonal == RED and \
+                    surface.get_at((int(x + 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != RED and \
+                    surface.get_at((int(x + 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != BLACK and \
+                    surface.get_at((int(x + 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != GRAY:
+
+                # Jump over own piece
+                ai_moves.append(("Right Diagonal Jump", x + 8 * CIRCLE_RAD, y + 8 * CIRCLE_RAD))
+                # print("AI - Red checker in right diagonal!")
+
+            elif piece_color_right_diagonal == BLACK and level >= piece_level_right_diagonal and \
+                    surface.get_at((int(x + 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != RED and \
+                    surface.get_at((int(x + 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != BLACK and \
+                    surface.get_at((int(x + 4 * CIRCLE_RAD * 2), int(y + 4 * CIRCLE_RAD * 2))) != GRAY:
+
+                # Capture opponent piece only possible if there is an "empty" landing square
+                ai_moves.append(("Right Diagonal Capture", x + 8 * CIRCLE_RAD, y + 8 * CIRCLE_RAD))
+                print("AI - Black checker in right diagonal!")
+
+    # Return the possible moves given a piece's x, y, and level
+    return ai_moves
+
+
 
